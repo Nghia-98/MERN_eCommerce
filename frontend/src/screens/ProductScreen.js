@@ -20,7 +20,7 @@ const ProductScreen = (props) => {
     };
 
     fetchProduct();
-  }, []);
+  }, [props.match.params.id]);
 
   // const product = products.find((p) => p._id === props.match.params.id);
 
