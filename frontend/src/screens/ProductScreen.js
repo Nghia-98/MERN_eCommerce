@@ -31,7 +31,7 @@ const ProductScreen = (props) => {
       </Link>
       <Row>
         <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
+          <Image src={product.image} alt={product.name} fluid='true' />
         </Col>
         <Col md={3}>
           <ListGroup variant='flush'>
@@ -54,7 +54,7 @@ const ProductScreen = (props) => {
 
         <Col md={3}>
           <Card>
-            <ListGroup fluid>
+            <ListGroup fluid='true'>
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
