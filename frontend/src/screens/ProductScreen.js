@@ -9,7 +9,7 @@ import Rating from '../components/Rating';
 import { listProductDetails } from '../actions/productActions';
 
 const ProductScreen = (props) => {
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
 
   // dispatch ListProductDetails Action
