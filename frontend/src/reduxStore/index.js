@@ -4,19 +4,27 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   productListReducer,
   productDetailsReducer,
-} from './reducers/productReducers.js';
+} from '../reducers/productReducers';
+import { cartReducer } from '../reducers/cartReducers';
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailsReducer,
+  cart: cartReducer,
 });
 
-const initialState = {};
+const cartItemsLocalStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+
+const initialState = {
+  cart: { cartItems: cartItemsLocalStorage },
+};
 
 const middleware = [thunk];
 
 const store = createStore(
-  reducer,
+  rootReducer,
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
