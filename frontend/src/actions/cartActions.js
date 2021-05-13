@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CART_ADD_ITEM } from '../constants/cartConstants';
+import { CART_ADD_ITEM, CART_REMOVE_ITEM } from '../constants/cartConstants';
 
 // This thunk middleware will dispatch when user click button AddToCart in ProductScreen
 // When click btn AddToCart -> we push history `/cart/id?qty={qty}` to render cartScreen
@@ -23,5 +23,18 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
   });
 
   // after save card info to redux state -> save card info down to localStorage
+  localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
+};
+
+export const removeFromCart = (id) => async (dispatch, getState) => {
+  // 1. dispatch action (with payload info) to cartReducers => delete product from state.cart.cartItems
+  dispatch({
+    type: CART_REMOVE_ITEM,
+    payload: {
+      id,
+    },
+  });
+
+  // update localStorage after delete a product in cart
   localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
 };

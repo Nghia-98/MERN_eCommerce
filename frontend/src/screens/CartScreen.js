@@ -11,8 +11,7 @@ import {
   ListGroup,
 } from 'react-bootstrap';
 import Message from '../components/Message';
-import { addToCart } from '../actions/cartActions';
-import { CART_DELETE_ITEM } from '../constants/cartConstants';
+import { addToCart, removeFromCart } from '../actions/cartActions';
 
 const CartScreen = (props) => {
   const dispatch = useDispatch();
@@ -28,7 +27,10 @@ const CartScreen = (props) => {
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
-  const removeFromCartHandler = (productID) => {};
+  const removeFromCartHandler = (productID) => {
+    // 1. dispatch an thunk middleware to reducer -> change redux state & localStorage
+    dispatch(removeFromCart(productID));
+  };
 
   const checkoutHandler = () => {
     props.history.push('/login?redirect=shipping');
@@ -74,6 +76,10 @@ const CartScreen = (props) => {
                         as='select'
                         value={cartItem.qty}
                         onChange={(e) =>
+                          // Should not dispatch addToCart here becase it will fetch product from server again
+                          // while this product alredy existing in redux state & localStorage
+                          // => Todo: Need refactor - not use addToCart func middleware here
+                          // => use onChange={(e) => changeProductQuantityInCartHandler(e)}
                           dispatch(addToCart(cartItem.product, e.target.value))
                         }
                       >
@@ -88,7 +94,7 @@ const CartScreen = (props) => {
                         )}
                       </Form.Control>
                     </Col>
-                    <Col md={2}>
+                    <Col md={3}>
                       <Button
                         type='button'
                         variant='light'
@@ -110,11 +116,9 @@ const CartScreen = (props) => {
             <ListGroup.Item>
               <h2>
                 Subtotal (
-                {Number(
-                  cartItems.reduce(
-                    (acc, item) => Number(acc) + Number(item.qty),
-                    0
-                  )
+                {cartItems.reduce(
+                  (acc, item) => Number(acc) + Number(item.qty),
+                  0
                 )}
                 ) items
               </h2>
