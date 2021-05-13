@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
@@ -11,6 +12,8 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(express.json());
 
 // fix statusCode 304 - Not Modify
 app.disable('etag');
@@ -22,6 +25,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 // middleware handler 404 error
 app.use(notFound);
