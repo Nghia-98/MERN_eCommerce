@@ -1,6 +1,43 @@
-import User from '../model/userModel.js';
 import 'express-async-errors';
+import bcrypt from 'bcryptjs';
+import User from '../model/userModel.js';
 import generateToken from '../utils/generateToken.js';
+
+// @desc:    User register
+// @route:   POST /api/users
+// @access:  Public
+
+const userRegister = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400); // 400 - bad request
+    throw new Error('User already existing !');
+  }
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+  });
+
+  if (user) {
+    return res
+      .status(201) // 201 - create success
+      .json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id),
+      });
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data !');
+  }
+};
 
 // @desc:   User login & get token
 // @route:  POST /api/users/login
@@ -43,4 +80,4 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export { userLogin, getUserProfile };
+export { userLogin, getUserProfile, userRegister };
