@@ -1,6 +1,4 @@
-# MERN_eCommorce
-
-# ProShop eCommerce Platform
+# MERN_eCommerce Platform
 
 > eCommerce platform built with the MERN stack & Redux.
 
