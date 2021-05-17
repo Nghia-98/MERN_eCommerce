@@ -3,8 +3,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGIN_FAIL,
 } from '../constants/userContants';
+import axios from 'axios';
 
-export const userLogin = (email, password) => async (dispatch) => {
+export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
@@ -31,7 +32,7 @@ export const userLogin = (email, password) => async (dispatch) => {
 
     // save userInfo after login success
     localStorage.setItem('userInfor', JSON.stringify(data));
-  } catch (err) {
+  } catch (error) {
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_LOGIN_FAIL,
