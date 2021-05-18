@@ -6,6 +6,9 @@ import {
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
 } from '../constants/userContants';
 import axios from 'axios';
 
@@ -98,6 +101,44 @@ export const register = (name, email, password) => async (dispatch) => {
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+// get user details action
+export const getUserDetails = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/${id}`, config);
+
+    // dispatch action for save userInfo in redux state (state.userLogin)
+    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
+    // if err dispatch action to save err in redux state
+    dispatch({
+      type: USER_DETAILS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
