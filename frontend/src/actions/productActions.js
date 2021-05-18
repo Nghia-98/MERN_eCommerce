@@ -20,6 +20,11 @@ export const listProducts = () => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
     dispatch({
       type: PRODUCT_LIST_FAIL,
       payload:
@@ -42,6 +47,11 @@ export const listProductDetails = (id) => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
     dispatch({
       type: PRODUCT_DETAILS_FAIL,
       payload:

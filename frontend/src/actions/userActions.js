@@ -37,6 +37,11 @@ export const login = (email, password) => async (dispatch) => {
     // save userInfo after login success
     localStorage.setItem('userInfor', JSON.stringify(data));
   } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -85,6 +90,11 @@ export const register = (name, email, password) => async (dispatch) => {
     // save userInfo after login success
     localStorage.setItem('userInfor', JSON.stringify(data));
   } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_REGISTER_FAIL,
