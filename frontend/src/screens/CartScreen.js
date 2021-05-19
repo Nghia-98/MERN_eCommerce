@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -79,7 +79,7 @@ const CartScreen = (props) => {
                           // Should not dispatch addToCart here becase it will fetch product from server again
                           // while this product already existing in redux state & localStorage
                           // => Todo: Need refactor - not use addToCart func middleware here
-                          // => use onChange={(e) => changeProductQuantityInCartHandler(e)}
+                          // => use onChange={(e) => updateProductQuantityInCartHandler(cartItem.product, e.target.value)}
                           dispatch(addToCart(cartItem.product, e.target.value))
                         }
                       >

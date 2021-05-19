@@ -6,7 +6,8 @@ import { CART_ADD_ITEM, CART_REMOVE_ITEM } from '../constants/cartConstants';
 // => we dispatch it in useEffect of cartScreen component
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
-  //fetch single product info
+  // Instead of fetch data from server (take time),
+  // we can getState from reduxStore (getState().productDetails.product)
   const { data } = await axios.get(`/api/products/${id}`);
 
   // dispatch action (with payload info) to cartReducers => push itemAdd to state.cart.cartItems
