@@ -164,8 +164,20 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 
     const { data } = await axios.put(`/api/users/profile`, user, config);
 
-    // dispatch action for save userInfo in redux state (state.userLogin)
+    // Dispatch action for save user info in redux state (reduxState.userUpdateProfile)
     dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+
+    // After update user info success, we must update userInfo in others field of reduxState & localStorage
+    // update reduxState.userLogin -> This help update user_name in Navbar
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+    // userLogin info must persistent storage in localstorage
+    //This will help reduxState.userLogin updated after page reload
+    localStorage.setItem('userInfo', JSON.stringify(data));
+
+    // update reduxState.userDetails -> This help update info of form in ProfileScreen;
+    const userDetails = { ...data };
+    delete userDetails.token;
+    dispatch({ type: USER_DETAILS_SUCCESS, payload: userDetails });
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)
