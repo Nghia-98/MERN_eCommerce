@@ -1,5 +1,4 @@
 import 'express-async-errors';
-import bcrypt from 'bcryptjs';
 import User from '../model/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
@@ -80,4 +79,31 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export { userLogin, getUserProfile, userRegister };
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Private
+const updateUserProfile = async (req, res) => {
+  const { name, email, password } = req.body;
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) user.password = password;
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found !');
+  }
+};
+
+export { userLogin, getUserProfile, updateUserProfile, userRegister };
