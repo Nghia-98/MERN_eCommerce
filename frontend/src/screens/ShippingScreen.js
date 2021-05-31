@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import { saveShippingAddress } from '../actions/cartActions';
+import CheckoutSteps from '../components/checkoutSteps';
 
 const ShippingScreen = (props) => {
   const { history } = props;
@@ -19,13 +19,13 @@ const ShippingScreen = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log('submitted');
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
     history.push('/paymet');
   };
 
   return (
     <FormContainer>
+      <CheckoutSteps step1 step2 />
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
         {/* Address */}
