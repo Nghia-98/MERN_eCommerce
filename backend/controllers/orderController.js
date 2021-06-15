@@ -5,7 +5,7 @@ import 'express-async-errors';
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
-export const addOrderItems = async (req, res) => {
+const addOrderItems = async (req, res) => {
   const {
     orderItems,
     shippingAddress,
@@ -37,3 +37,21 @@ export const addOrderItems = async (req, res) => {
     res.status(201).json(createdOrder);
   }
 };
+
+// @desc    Get order by ID
+// @route   GET /api/orders/:id
+// @access  Private
+const getOrderById = async (req, res) => {
+  const orderId = req.params.id;
+
+  const order = await Order.findById(orderId).populate('user', 'name email');
+
+  if (order) {
+    res.status(200).json(order);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+};
+
+export { addOrderItems, getOrderById };
