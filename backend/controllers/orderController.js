@@ -54,4 +54,30 @@ const getOrderById = async (req, res) => {
   }
 };
 
-export { addOrderItems, getOrderById };
+// @desc    Update order to paid
+// @route   PUT /api/orders/:id/pay
+// @access  Private
+const updateOrderToPay = async (req, res) => {
+  const orderId = req.params.id;
+
+  const order = await Order.findById(orderId);
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.email_address,
+    };
+    const updatedOrder = await order.save();
+
+    res.status(204).json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error('Update order to paid failed');
+  }
+};
+
+export { addOrderItems, getOrderById, updateOrderToPay };
