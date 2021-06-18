@@ -39,7 +39,7 @@ const OrderScreen = (props) => {
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
 
-      // create & setup <script> tag to embed on the page
+      // create & setup <script> tag to embed PayPal SDK JS on the page
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
@@ -52,14 +52,24 @@ const OrderScreen = (props) => {
       document.body.appendChild(script);
     };
 
+    // When the screen loading,
+    // if order isn't exist || order._id not match orderId in params ||
+    // Order has just been paid (->order has been updated in Backend)
     if (!order || order._id !== orderId || successPay) {
+      // Reset orderPay object in Redux back to emty {}, then fetch orderDetails from Backend again
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
-    } else if (!order.isPaid) {
-      if (!window.paypal) {
-        addPayPalScript();
-      } else {
-        setSdkReady(true);
+    } else {
+      // if orderDetails already fine
+      if (!order.isPaid) {
+        // if order not paid
+        if (!window.paypal) {
+          // if the PayPal SDK Script has not loaded
+          addPayPalScript();
+        } else {
+          // if the PayPal SDK Script has been load
+          setSdkReady(true);
+        }
       }
     }
   }, [dispatch, order, orderId, successPay]);
