@@ -34,7 +34,6 @@ const OrderScreen = (props) => {
       }, 0)
     );
   }
-
   useEffect(() => {
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
@@ -55,7 +54,7 @@ const OrderScreen = (props) => {
     // When the screen loading,
     // if order isn't exist || order._id not match orderId in params ||
     // Order has just been paid (->order has been updated in Backend)
-    if (!order || order._id !== orderId || successPay) {
+    if (!order || (order && order._id !== orderId) || successPay) {
       // Reset orderPay object in Redux back to emty {}, then fetch orderDetails from Backend again
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
