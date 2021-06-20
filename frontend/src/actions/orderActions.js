@@ -10,6 +10,9 @@ import {
   ORDER_PAY_FAIL,
   ORDER_PAY_RESET,
   ORDER_CREATE_RESET,
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
 } from '../constants/orderConstants';
 import axios from 'axios';
 
@@ -132,3 +135,40 @@ export const payOrder =
       });
     }
   };
+
+export const getOrderListMy = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_LIST_MY_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/myorders`, config);
+
+    dispatch({
+      type: ORDER_LIST_MY_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    // there are 2 kind of error
+    // 1. error from client, network err ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+    dispatch({
+      type: ORDER_LIST_MY_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
