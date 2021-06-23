@@ -5,13 +5,20 @@ import {
   userLogin,
   getUserProfile,
   updateUserProfile,
+  getUsers,
 } from '../controllers/userController.js';
 import auth from '../middleware/authMiddleware.js';
 
-router.route('/').post(userRegister);
-router.route('/login').post(userLogin);
-router
-  .route('/profile')
+// @route   /api/users
+
+router.route('/')
+  .get(auth.isLogin, auth.isAdmin, getUsers)
+  .post(userRegister);
+
+router.route('/login')
+  .post(userLogin);
+
+router.route('/profile')
   .get(auth.isLogin, getUserProfile)
   .put(auth.isLogin, updateUserProfile);
 
