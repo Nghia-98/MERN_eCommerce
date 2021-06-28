@@ -7,6 +7,8 @@ import {
   updateUserProfile,
   getUsers,
   deleteUser,
+  getUserById,
+  updateUser,
 } from '../controllers/userController.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -28,6 +30,8 @@ router.route('/profile')
 
 // prettier-ignore
 router.route('/:id')
+  .get(auth.isLogin, auth.isAdmin, getUserById)
+  .put(auth.isLogin, auth.isAdmin, updateUser)
   .delete(auth.isLogin, auth.isAdmin, deleteUser);
 
 export default router;
