@@ -20,6 +20,9 @@ import {
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
   USER_DELETE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
 } from '../constants/userContants';
 import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
@@ -136,6 +139,8 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
 
+    // call route /api/users/profile -> get user details of user login (ProfileScreen)
+    // call route /api/users/:id -> admin get user details of any user (UserEditScreen)
     const { data } = await axios.get(`/api/users/${id}`, config);
 
     // dispatch action for save userInfo in redux state (state.userLogin)
@@ -263,6 +268,47 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
 
     dispatch({
       type: USER_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const updateUser = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_REQUEST,
+    });
+
+    const { userInfo } = getState().userLogin;
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/users/${userData._id}`,
+      userData,
+      config
+    );
+
+    dispatch({ type: USER_UPDATE_SUCCESS });
+
+    // update reduxState.userDetails -> This help update info of form in ProfileScreen;
+    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
+    dispatch({
+      type: USER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

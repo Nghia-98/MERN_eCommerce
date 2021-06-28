@@ -44,7 +44,7 @@ const UserListScreen = (props) => {
       ) : error || userDeleteError ? (
         <Message variant='danger'>{error || userDeleteError}</Message>
       ) : (
-        <Table stripe hover responsive bordered className='table-sm'>
+        <Table striped hover responsive bordered className='table-sm'>
           <thead>
             <tr>
               <th>ID</th>

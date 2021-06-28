@@ -4,7 +4,8 @@ import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getUserDetails } from '../actions/userActions';
+import { getUserDetails, updateUser } from '../actions/userActions';
+import { USER_UPDATE_RESET } from '../constants/userContants';
 import FormContainer from '../components/FormContainer';
 
 const UserEditScreen = (props) => {
@@ -20,26 +21,43 @@ const UserEditScreen = (props) => {
   const userDetails = useSelector((state) => state.userDetails);
   const { loading, error, user } = userDetails;
 
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const {
+    loading: userUpdateLoading,
+    error: userUpdateError,
+    success: userUpdateSuccess,
+  } = userUpdate;
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (!userInfo || !userInfo.isAdmin) {
+    if (!userInfo) {
       history.push('/login');
     }
 
-    if (!user.name || userId !== user._id) {
-      dispatch(getUserDetails(userId));
-    } else {
-      setName(user.name);
-      setEmail(user.email);
-      setIsAdmin(user.isAdmin);
+    if (!userInfo.isAdmin) {
+      history.push('/');
     }
-  }, [dispatch, user, userId]);
+
+    if (userUpdateSuccess) {
+      dispatch({ type: USER_UPDATE_RESET });
+      history.push('/admin/userlist');
+    } else {
+      if (!user.name || userId !== user._id) {
+        dispatch(getUserDetails(userId));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+        setIsAdmin(user.isAdmin);
+      }
+    }
+  }, [dispatch, history, user, userId, userUpdateSuccess]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateUser({ _id: userId, name, email, isAdmin }));
   };
 
   return (
@@ -49,6 +67,11 @@ const UserEditScreen = (props) => {
       </Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {userUpdateSuccess && <Loader />}
+        {userUpdateError && (
+          <Message variant='danger'>{userUpdateError}</Message>
+        )}
+
         {loading ? (
           <Loader />
         ) : error ? (
