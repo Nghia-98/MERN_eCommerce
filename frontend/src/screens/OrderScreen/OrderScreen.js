@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import { getOrderDetails, payOrder } from '../../actions/orderActions';
-import { ORDER_PAY_RESET } from '../../constants/orderConstants';
+import {
+  ORDER_LIST_MY_RESET,
+  ORDER_PAY_RESET,
+} from '../../constants/orderConstants';
 
 const OrderScreen = (props) => {
   const { match } = props;
@@ -57,6 +60,7 @@ const OrderScreen = (props) => {
     if (!order || (order && order._id !== orderId) || successPay) {
       // Reset orderPay object in Redux back to emty {}, then fetch orderDetails from Backend again
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_LIST_MY_RESET });
       dispatch(getOrderDetails(orderId));
     } else {
       // if orderDetails already fine

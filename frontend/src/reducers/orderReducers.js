@@ -90,7 +90,7 @@ const orderPayReducer = (state = {}, action) => {
   }
 };
 
-const orderListMyReducer = (state = { orders: [] }, action) => {
+const orderListMyReducer = (state = {}, action) => {
   switch (action.type) {
     case ORDER_LIST_MY_REQUEST:
       return {
@@ -110,7 +110,7 @@ const orderListMyReducer = (state = { orders: [] }, action) => {
       };
 
     case ORDER_LIST_MY_RESET:
-      return { orders: [] };
+      return {};
 
     default:
       return state;

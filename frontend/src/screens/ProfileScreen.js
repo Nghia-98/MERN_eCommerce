@@ -71,15 +71,19 @@ const ProfileScreen = ({ history, location }) => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      // if userDetails.user or orderListMy in redux state is emty
-      if (!user.name || !orders) {
+      // if userDetails.user emty
+      if (!user.name) {
         // fetch user & orders info from server
         dispatch(getUserDetails('profile'));
-        dispatch(getOrderListMy());
         //console.log('Dispatch Inside useEffect has called !');
       } else {
         setName(user.name);
         setEmail(user.email);
+      }
+
+      // orderListMy.orders in redux state is null/undefined
+      if (!orders) {
+        dispatch(getOrderListMy());
       }
     }
   }, [dispatch, history, userInfo, user, orders]);
@@ -163,6 +167,8 @@ const ProfileScreen = ({ history, location }) => {
           <Loader />
         ) : errorOrderListMy ? (
           <Message variant='danger'>{errorOrderListMy}</Message>
+        ) : !orders ? (
+          <Message>You don't have any orders</Message>
         ) : (
           <Table striped bordered hover responsive className='table-sm'>
             <thead>

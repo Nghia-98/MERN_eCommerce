@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { getUserDetails, updateUser } from '../actions/userActions';
-import { USER_UPDATE_RESET } from '../constants/userContants';
+import {
+  USER_DETAILS_RESET,
+  USER_UPDATE_RESET,
+} from '../constants/userContants';
 import FormContainer from '../components/FormContainer';
 
 const UserEditScreen = (props) => {
@@ -41,17 +44,21 @@ const UserEditScreen = (props) => {
       history.push('/');
     }
 
+    // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
+    // the user we ưant edit has the id that match the id param in the url
+    if (!user.name || userId !== user._id) {
+      dispatch(getUserDetails(userId));
+    } else {
+      // userDetails is alright
+      setName(user.name);
+      setEmail(user.email);
+      setIsAdmin(user.isAdmin);
+    }
+
     if (userUpdateSuccess) {
       dispatch({ type: USER_UPDATE_RESET });
+      dispatch({ type: USER_DETAILS_RESET });
       history.push('/admin/userlist');
-    } else {
-      if (!user.name || userId !== user._id) {
-        dispatch(getUserDetails(userId));
-      } else {
-        setName(user.name);
-        setEmail(user.email);
-        setIsAdmin(user.isAdmin);
-      }
     }
   }, [dispatch, history, user, userId, userUpdateSuccess]);
 
@@ -67,7 +74,7 @@ const UserEditScreen = (props) => {
       </Link>
       <FormContainer>
         <h1>Edit User</h1>
-        {userUpdateSuccess && <Loader />}
+        {userUpdateLoading && <Loader />}
         {userUpdateError && (
           <Message variant='danger'>{userUpdateError}</Message>
         )}

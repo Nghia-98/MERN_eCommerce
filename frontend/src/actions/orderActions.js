@@ -75,9 +75,6 @@ export const getOrderDetails = (orderId) => async (dispatch, getState) => {
       type: ORDER_DETAILS_SUCCESS,
       payload: data,
     });
-
-    // Reset orderCreate in redux -> get ready for create a new order
-    dispatch({ type: ORDER_CREATE_RESET });
   } catch (err) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)

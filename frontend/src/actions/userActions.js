@@ -298,9 +298,6 @@ export const updateUser = (userData) => async (dispatch, getState) => {
     );
 
     dispatch({ type: USER_UPDATE_SUCCESS });
-
-    // update reduxState.userDetails -> This help update info of form in ProfileScreen;
-    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)
