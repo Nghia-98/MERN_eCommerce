@@ -23,6 +23,8 @@ const HomeScreen = () => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : !products ? (
+        <Message>Products Emty</Message>
       ) : (
         <Row>
           {products.map((product, index, arr) => {
