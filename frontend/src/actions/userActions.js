@@ -26,6 +26,7 @@ import {
 } from '../constants/userContants';
 import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
+import { toast } from 'react-toastify';
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -260,6 +261,7 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
     const { data } = await axios.delete(`/api/users/${userId}`, config);
 
     dispatch({ type: USER_DELETE_SUCCESS });
+    toast.success('User deleted successfully!');
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)
@@ -298,6 +300,7 @@ export const updateUser = (userData) => async (dispatch, getState) => {
     );
 
     dispatch({ type: USER_UPDATE_SUCCESS });
+    toast.success('User updated successfully!');
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)

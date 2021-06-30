@@ -65,7 +65,7 @@ const CartScreen = (props) => {
                       ></Image>
                     </Col>
                     <Col md={3}>
-                      <Link to={`/products/${cartItem.product}`}>
+                      <Link to={`/product/${cartItem.product}`}>
                         {cartItem.name}
                       </Link>
                     </Col>
