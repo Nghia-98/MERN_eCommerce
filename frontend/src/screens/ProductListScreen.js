@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -54,11 +56,13 @@ const ProductListScreen = (props) => {
           </Button>
         </Col>
       </Row>
-
+      <ToastContainer position='top-right' autoClose={3000} />
       {loading || productDeleteLoading ? (
         <Loader />
       ) : error || productDeleteError ? (
         <Message variant='danger'>{error || productDeleteError}</Message>
+      ) : products.length === 0 ? (
+        <Message variant='info'>There are no product</Message>
       ) : (
         <Table striped hover responsive bordered className='table-sm'>
           <thead>

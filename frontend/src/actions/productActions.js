@@ -11,6 +11,7 @@ import {
   PRODUCT_DELETE_FAIL,
   PRODUCT_DELETE_RESET,
 } from '../constants/productConstants.js';
+import { toast } from 'react-toastify';
 
 export const listProducts = () => async (dispatch) => {
   try {
@@ -83,6 +84,7 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
     const { data } = await axios.delete(`/api/products/${productId}`, config);
 
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
+    toast.success('Delete product successfully');
   } catch (err) {
     dispatch({
       type: PRODUCT_DELETE_FAIL,
