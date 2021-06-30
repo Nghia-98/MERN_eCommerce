@@ -6,16 +6,16 @@ import Message from '../components/Message';
 import { Form } from 'react-bootstrap';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import { listProductDetails } from '../actions/productActions';
+import { getProductDetails } from '../actions/productActions';
 
 const ProductScreen = (props) => {
   const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
 
-  // dispatch ListProductDetails Action
+  // dispatch getProductDetails Action
   // to fetch single product from server and save in redux state (loading, error, product)
   useEffect(() => {
-    dispatch(listProductDetails(props.match.params.id));
+    dispatch(getProductDetails(props.match.params.id));
   }, [dispatch, props.match]);
 
   const AddToCartHandler = () => {

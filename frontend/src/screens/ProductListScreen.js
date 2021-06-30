@@ -4,7 +4,8 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listProducts } from '../actions/productActions';
+import { listProducts, deleteProduct } from '../actions/productActions';
+import { PRODUCT_DELETE_RESET } from '../constants/productConstants';
 
 const ProductListScreen = (props) => {
   const { history, match } = props;
@@ -16,17 +17,28 @@ const ProductListScreen = (props) => {
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
 
+  const productDelete = useSelector((state) => state.productDelete);
+  const {
+    loading: productDeleteLoading,
+    error: productDeleteError,
+    success: productDeleteSuccess,
+  } = productDelete;
+
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listProducts());
+    if (!userInfo || !userInfo.isAdmin) {
+      history.push('/login');
     } else {
-      props.history.push('/login');
+      dispatch(listProducts());
     }
-  }, [userInfo, dispatch, history]);
+
+    if (productDeleteSuccess) {
+      dispatch({ type: PRODUCT_DELETE_RESET });
+    }
+  }, [userInfo, dispatch, history, productDeleteSuccess]);
 
   const productDeleteHandler = (productId) => {
     if (window.confirm('Are you sure to delete product?')) {
-      //dispatch(deleteProduct(productId));
+      dispatch(deleteProduct(productId));
     }
   };
 
@@ -42,10 +54,11 @@ const ProductListScreen = (props) => {
           </Button>
         </Col>
       </Row>
-      {loading ? (
+
+      {loading || productDeleteLoading ? (
         <Loader />
-      ) : error ? (
-        <Message variant='danger'>{error}</Message>
+      ) : error || productDeleteError ? (
+        <Message variant='danger'>{error || productDeleteError}</Message>
       ) : (
         <Table striped hover responsive bordered className='table-sm'>
           <thead>
