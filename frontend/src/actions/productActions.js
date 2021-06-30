@@ -10,6 +10,10 @@ import {
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAIL,
   PRODUCT_DELETE_RESET,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_CREATE_RESET,
 } from '../constants/productConstants.js';
 import { toast } from 'react-toastify';
 
@@ -88,6 +92,39 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: PRODUCT_DELETE_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const createProduct = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    // call api create product to backend server
+    const { data } = await axios.post(`/api/products/`, {}, config);
+
+    dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data.product });
+    toast.success('Product created successfully');
+
+    dispatch({ type: PRODUCT_CREATE_RESET });
+  } catch (err) {
+    dispatch({
+      type: PRODUCT_CREATE_FAIL,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

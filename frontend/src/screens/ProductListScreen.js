@@ -6,8 +6,15 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listProducts, deleteProduct } from '../actions/productActions';
-import { PRODUCT_DELETE_RESET } from '../constants/productConstants';
+import {
+  listProducts,
+  deleteProduct,
+  createProduct,
+} from '../actions/productActions';
+import {
+  PRODUCT_DELETE_RESET,
+  PRODUCT_CREATE_RESET,
+} from '../constants/productConstants';
 
 const ProductListScreen = (props) => {
   const { history, match } = props;
@@ -26,17 +33,35 @@ const ProductListScreen = (props) => {
     success: productDeleteSuccess,
   } = productDelete;
 
+  const productCreated = useSelector((state) => state.productCreate);
+
+  const {
+    loading: productCreateLoading,
+    error: productCreateError,
+    success: productCreateSuccess,
+    product: productCreate,
+  } = productCreated;
+
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       history.push('/login');
-    } else {
-      dispatch(listProducts());
     }
 
     if (productDeleteSuccess) {
       dispatch({ type: PRODUCT_DELETE_RESET });
     }
-  }, [userInfo, dispatch, history, productDeleteSuccess]);
+
+    if (productCreateSuccess) {
+      dispatch({ type: PRODUCT_CREATE_RESET });
+      history.push(`/admin/product/${productCreate._id}/edit`);
+    }
+
+    dispatch(listProducts());
+  }, [userInfo, dispatch, history, productDeleteSuccess, productCreateSuccess]);
+
+  const productCreateHandler = () => {
+    dispatch(createProduct());
+  };
 
   const productDeleteHandler = (productId) => {
     if (window.confirm('Are you sure to delete product?')) {
@@ -51,16 +76,18 @@ const ProductListScreen = (props) => {
           <h1>Products</h1>
         </Col>
         <Col className='text-right'>
-          <Button className='my-3' onClick='createProductHandler'>
+          <Button className='my-3' onClick={productCreateHandler}>
             <i className='fas fa-plus'></i> Create Product
           </Button>
         </Col>
       </Row>
       <ToastContainer position='top-right' autoClose={3000} />
-      {loading || productDeleteLoading ? (
+      {loading || productDeleteLoading || productCreateLoading ? (
         <Loader />
-      ) : error || productDeleteError ? (
-        <Message variant='danger'>{error || productDeleteError}</Message>
+      ) : error || productDeleteError || productCreateError ? (
+        <Message variant='danger'>
+          {error || productDeleteError || productCreateError}
+        </Message>
       ) : products.length === 0 ? (
         <Message variant='info'>There are no product</Message>
       ) : (
