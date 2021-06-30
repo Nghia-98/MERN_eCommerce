@@ -119,7 +119,6 @@ export const createProduct = () => async (dispatch, getState) => {
     const { data } = await axios.post(`/api/products/`, {}, config);
 
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data.product });
-    toast.success('Product created successfully');
 
     dispatch({ type: PRODUCT_CREATE_RESET });
   } catch (err) {

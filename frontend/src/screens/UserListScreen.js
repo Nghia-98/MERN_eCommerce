@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,7 +39,6 @@ const UserListScreen = (props) => {
   return (
     <>
       <h1>Users</h1>
-      <ToastContainer position='top-right' autoClose={3000} />
       {loading ? (
         <Loader />
       ) : error || userDeleteError ? (

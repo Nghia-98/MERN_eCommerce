@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -53,6 +52,7 @@ const ProductListScreen = (props) => {
 
     if (productCreateSuccess) {
       dispatch({ type: PRODUCT_CREATE_RESET });
+      toast.success('Product created successfully');
       history.push(`/admin/product/${productCreate._id}/edit`);
     }
 
@@ -81,7 +81,6 @@ const ProductListScreen = (props) => {
           </Button>
         </Col>
       </Row>
-      <ToastContainer position='top-right' autoClose={3000} />
       {loading || productDeleteLoading || productCreateLoading ? (
         <Loader />
       ) : error || productDeleteError || productCreateError ? (
