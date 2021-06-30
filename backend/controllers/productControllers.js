@@ -29,7 +29,7 @@ export const getProductById = async (req, res) => {
 
 // @desc:   Delete single product by ID
 // @route:  DELETE /api/products/:id
-// @access: Private, Admin
+// @access: Private/Admin
 export const deleteProductById = async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
@@ -37,5 +37,61 @@ export const deleteProductById = async (req, res) => {
     res.json({ message: 'product deleted' });
   } else {
     res.status(404).json({ message: 'Product not found !' });
+  }
+};
+
+// @desc:   Create product
+// @route:  POST /api/products
+// @access: Private/Admin
+export const createProduct = async (req, res) => {
+  const product = new Product({
+    name: 'Sample name',
+    price: 0,
+    user: req.user._id,
+    image: '/images/sample.jpg',
+    brand: 'Sample brand',
+    category: 'Sample category',
+    countInStock: 0,
+    numReviews: 0,
+    description: 'Sample description',
+  });
+
+  const productCreated = await product.save();
+
+  res.status(201).json({
+    message: 'Product created successfully!',
+    product: productCreated,
+  });
+};
+
+// @desc:   Update product by id
+// @route:  PUT /api/products/:id
+// @access: Private/Admin
+export const updateProduct = async (req, res) => {
+  const productId = req.params.id;
+
+  const { name, price, description, image, brand, category, countInStock } =
+    req.body;
+
+  const product = await Product.findById(productId);
+
+  if (product) {
+    product.name = name;
+    product.price = price;
+    product.description = description;
+    product.image = image;
+    product.brand = brand;
+    product.category = category;
+    product.countInStock = countInStock;
+
+    const productUpdated = await product.save();
+
+    res.status(200).json({
+      message: 'Product updated successfully!',
+      product: productUpdated,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Product not found!');
   }
 };
