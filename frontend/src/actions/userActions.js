@@ -140,12 +140,15 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    // call route /api/users/profile -> get user details of user login (ProfileScreen)
-    // call route /api/users/:id -> admin get user details of any user (UserEditScreen)
-    const { data } = await axios.get(`/api/users/${id}`, config);
-
-    // dispatch action for save userInfo in redux state (state.userLogin)
-    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    if (id === 'profile') {
+      // call route /api/users/profile -> get user details of user login (ProfileScreen)
+      const { data } = await axios.get('/api/users/profile', config);
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    } else {
+      // call route /api/users/:id -> admin get user details of any user (UserEditScreen)
+      const { data } = await axios.get(`/api/users/${id}`, config);
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    }
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)

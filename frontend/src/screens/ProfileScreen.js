@@ -72,7 +72,7 @@ const ProfileScreen = ({ history, location }) => {
       history.push('/login');
     } else {
       // if userDetails.user emty
-      if (!user.name) {
+      if (!user.name || user.name !== userInfo.name) {
         // fetch user & orders info from server
         dispatch(getUserDetails('profile'));
         //console.log('Dispatch Inside useEffect has called !');
