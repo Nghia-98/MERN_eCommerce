@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
@@ -14,7 +15,7 @@ import {
 const ProductEditScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
+  const [productData, setProductData] = useState({
     name: '',
     image: '',
     price: 0,
@@ -53,8 +54,8 @@ const ProductEditScreen = ({ history, match }) => {
     if (!product.name || product._id !== match.params.id) {
       dispatch(getProductDetails(match.params.id));
     } else {
-      setFormData({
-        ...formData,
+      setProductData({
+        ...productData,
         name: product.name,
         image: product.image,
         price: product.price,
@@ -66,21 +67,40 @@ const ProductEditScreen = ({ history, match }) => {
     }
   }, [dispatch, history, match, userInfo, product, productUpdateSuccess]);
 
-  const formDataOnChangeHandler = (e) => {
-    setFormData({
-      ...formData,
+  const productDataOnChangeHandler = (e) => {
+    setProductData({
+      ...productData,
       // Computed property names (ES2015)
       [e.target.name]: e.target.value,
     });
   };
 
-  const uploadFileHandler = (e) => {
-    e.preventDefault();
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const { data } = await axios.post('/api/upload', formData, config);
+
+      setProductData({ ...productData, image: data.filePath });
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateProduct({ _id: product._id, ...formData }));
+    dispatch(updateProduct({ _id: product._id, ...productData }));
   };
 
   return (
@@ -104,8 +124,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='text'
                 name='name'
                 placeholder='Enter name'
-                value={formData.name}
-                onChange={formDataOnChangeHandler}
+                value={productData.name}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
@@ -115,8 +135,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='text'
                 name='image'
                 placeholder='Enter image url'
-                value={formData.image}
-                onChange={formDataOnChangeHandler}
+                value={productData.image}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
               <Form.File
                 id='image-file'
@@ -133,8 +153,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='number'
                 name='price'
                 placeholder='Enter price'
-                value={formData.price}
-                onChange={formDataOnChangeHandler}
+                value={productData.price}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
@@ -144,8 +164,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='text'
                 name='brand'
                 placeholder='Enter brand'
-                value={formData.brand}
-                onChange={formDataOnChangeHandler}
+                value={productData.brand}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
@@ -155,8 +175,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='number'
                 name='countInStock'
                 placeholder='Enter countInStock'
-                value={formData.countInStock}
-                onChange={formDataOnChangeHandler}
+                value={productData.countInStock}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
@@ -166,8 +186,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='text'
                 name='category'
                 placeholder='Enter category'
-                value={formData.category}
-                onChange={formDataOnChangeHandler}
+                value={productData.category}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
@@ -177,8 +197,8 @@ const ProductEditScreen = ({ history, match }) => {
                 type='text'
                 name='description'
                 placeholder='Enter description'
-                value={formData.description}
-                onChange={formDataOnChangeHandler}
+                value={productData.description}
+                onChange={productDataOnChangeHandler}
               ></Form.Control>
             </Form.Group>
 
