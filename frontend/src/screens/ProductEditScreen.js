@@ -5,15 +5,19 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import FormContainer from '../components/FormContainer';
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import { getProductDetails } from '../actions/productActions';
+import { getProductDetails, updateProduct } from '../actions/productActions';
+import {
+  PRODUCT_DETAILS_RESET,
+  PRODUCT_UPDATE_RESET,
+} from '../constants/productConstants';
 
 const ProductEditScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: '',
-    price: 0,
     image: '',
+    price: 0,
     brand: '',
     category: '',
     countInStock: 0,
@@ -28,9 +32,22 @@ const ProductEditScreen = ({ history, match }) => {
     (state) => state.productDetails
   );
 
+  const {
+    loading: productUpdateLoading,
+    error: productUpdateError,
+    success: productUpdateSuccess,
+    product: productUpdated,
+  } = useSelector((state) => state.productUpdate);
+
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       history.push('/login');
+    }
+
+    if (productUpdateSuccess) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      dispatch({ type: PRODUCT_DETAILS_RESET });
+      history.push('/admin/productlist');
     }
 
     if (!product.name || product._id !== match.params.id) {
@@ -39,15 +56,15 @@ const ProductEditScreen = ({ history, match }) => {
       setFormData({
         ...formData,
         name: product.name,
-        price: product.price,
         image: product.image,
+        price: product.price,
         brand: product.brand,
         category: product.category,
         countInStock: product.countInStock,
         description: product.description,
       });
     }
-  }, [dispatch, history, match, userInfo, product]);
+  }, [dispatch, history, match, userInfo, product, productUpdateSuccess]);
 
   const formDataOnChangeHandler = (e) => {
     setFormData({
@@ -63,6 +80,7 @@ const ProductEditScreen = ({ history, match }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateProduct({ _id: product._id, ...formData }));
   };
 
   return (
@@ -73,10 +91,10 @@ const ProductEditScreen = ({ history, match }) => {
 
       <FormContainer>
         <h1>Edit Product</h1>
-        {loading ? (
+        {loading || productUpdateLoading ? (
           <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
+        ) : error || productUpdateError ? (
+          <Message variant='danger'>{error || productUpdateLoading}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>

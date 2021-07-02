@@ -44,6 +44,12 @@ const UserEditScreen = (props) => {
       history.push('/');
     }
 
+    if (userUpdateSuccess) {
+      dispatch({ type: USER_UPDATE_RESET });
+      dispatch({ type: USER_DETAILS_RESET });
+      history.push('/admin/userlist');
+    }
+
     // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
     // the user we ưant edit has the id that match the id param in the url
     if (!user.name || userId !== user._id) {
@@ -53,12 +59,6 @@ const UserEditScreen = (props) => {
       setName(user.name);
       setEmail(user.email);
       setIsAdmin(user.isAdmin);
-    }
-
-    if (userUpdateSuccess) {
-      dispatch({ type: USER_UPDATE_RESET });
-      dispatch({ type: USER_DETAILS_RESET });
-      history.push('/admin/userlist');
     }
   }, [dispatch, history, user, userId, userUpdateSuccess]);
 

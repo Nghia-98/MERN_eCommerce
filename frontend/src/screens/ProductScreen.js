@@ -28,9 +28,15 @@ const ProductScreen = (props) => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
-        Go Back
-      </Link>
+      <div
+        className='btn btn-light my-3'
+        onClick={() => {
+          props.history.goBack();
+        }}
+      >
+        <i class='fas fa-arrow-left'></i> Go Back
+      </div>
+
       {loading ? (
         <Loader />
       ) : error ? (

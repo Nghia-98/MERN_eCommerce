@@ -70,19 +70,19 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   const productId = req.params.id;
 
-  const { name, price, description, image, brand, category, countInStock } =
+  const { name, image, price, brand, category, countInStock, description } =
     req.body;
 
   const product = await Product.findById(productId);
 
   if (product) {
     product.name = name;
-    product.price = price;
-    product.description = description;
     product.image = image;
+    product.price = price;
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
+    product.description = description;
 
     const productUpdated = await product.save();
 
