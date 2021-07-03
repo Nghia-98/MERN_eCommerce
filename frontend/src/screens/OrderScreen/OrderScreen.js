@@ -35,7 +35,11 @@ const OrderScreen = (props) => {
   const { loading: loadingPay, success: successPay } = orderPay;
 
   const orderDeliver = useSelector((state) => state.orderDeliver);
-  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+  const {
+    loading: loadingDeliver,
+    success: successDeliver,
+    error: errorDeliver,
+  } = orderDeliver;
 
   if (success) {
     const addDecimals = (num) => {
@@ -109,8 +113,8 @@ const OrderScreen = (props) => {
 
   return loading || !success ? (
     <Loader />
-  ) : error ? (
-    <Message variant='danger'>error</Message>
+  ) : error || errorDeliver ? (
+    <Message variant='danger'>{error || errorDeliver}</Message>
   ) : (
     <>
       <h1>Order</h1>
