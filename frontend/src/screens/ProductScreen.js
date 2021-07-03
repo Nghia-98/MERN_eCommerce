@@ -6,16 +6,16 @@ import Message from '../components/Message';
 import { Form } from 'react-bootstrap';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import { listProductDetails } from '../actions/productActions';
+import { getProductDetails } from '../actions/productActions';
 
 const ProductScreen = (props) => {
   const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
 
-  // dispatch ListProductDetails Action
+  // dispatch getProductDetails Action
   // to fetch single product from server and save in redux state (loading, error, product)
   useEffect(() => {
-    dispatch(listProductDetails(props.match.params.id));
+    dispatch(getProductDetails(props.match.params.id));
   }, [dispatch, props.match]);
 
   const AddToCartHandler = () => {
@@ -28,9 +28,15 @@ const ProductScreen = (props) => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
-        Go Back
-      </Link>
+      <div
+        className='btn btn-light my-3'
+        onClick={() => {
+          props.history.goBack();
+        }}
+      >
+        <i class='fas fa-arrow-left'></i> Go Back
+      </div>
+
       {loading ? (
         <Loader />
       ) : error ? (
@@ -38,7 +44,11 @@ const ProductScreen = (props) => {
       ) : (
         <Row>
           <Col md={6}>
-            <Image src={product.image} alt={product.name} fluid='true' />
+            <Image
+              src={`http://localhost:3000/${product.image}`}
+              alt={product.name}
+              fluid='true'
+            />
           </Col>
           <Col md={3}>
             <ListGroup variant='flush'>

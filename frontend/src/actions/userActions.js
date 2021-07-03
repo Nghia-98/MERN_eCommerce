@@ -13,9 +13,24 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
 } from '../constants/userContants';
 import axios from 'axios';
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
+import {
+  ORDER_DETAILS_RESET,
+  ORDER_LIST_MY_RESET,
+} from '../constants/orderConstants';
+import { toast } from 'react-toastify';
+import { CART_INFO_RESET } from '../constants/cartConstants';
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -46,7 +61,7 @@ export const login = (email, password) => async (dispatch) => {
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
+    // 1. error from client, network error ( -> use error.message)
     // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
     // console.log({ ...error });
 
@@ -63,10 +78,13 @@ export const login = (email, password) => async (dispatch) => {
 
 // logout action
 export const logout = () => (dispatch) => {
-  localStorage.removeItem('userInfo');
-  dispatch({ type: USER_LOGOUT });
+  localStorage.clear();
+  dispatch({ type: CART_INFO_RESET });
+  dispatch({ type: USER_LIST_RESET });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_LIST_MY_RESET });
+  dispatch({ type: ORDER_DETAILS_RESET });
+  dispatch({ type: USER_LOGOUT });
 };
 
 // register action
@@ -128,10 +146,15 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/${id}`, config);
-
-    // dispatch action for save userInfo in redux state (state.userLogin)
-    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    if (id === 'profile') {
+      // call route /api/users/profile -> get user details of user login (ProfileScreen)
+      const { data } = await axios.get('/api/users/profile', config);
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    } else {
+      // call route /api/users/:id -> admin get user details of any user (UserEditScreen)
+      const { data } = await axios.get(`/api/users/${id}`, config);
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    }
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client ( -> use error.message)
@@ -189,6 +212,112 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getListUser = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
+
+    const { userInfo } = getState().userLogin;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/`, config);
+
+    dispatch({ type: USER_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteUser = (userId) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DELETE_REQUEST,
+    });
+
+    const { userInfo } = getState().userLogin;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/users/${userId}`, config);
+
+    dispatch({ type: USER_DELETE_SUCCESS });
+    toast.success('User deleted successfully!');
+  } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
+    dispatch({
+      type: USER_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const updateUser = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_REQUEST,
+    });
+
+    const { userInfo } = getState().userLogin;
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/users/${userData._id}`,
+      userData,
+      config
+    );
+
+    dispatch({ type: USER_UPDATE_SUCCESS });
+    toast.success('User updated successfully!');
+  } catch (error) {
+    // there are 2 kind of error
+    // 1. error from client ( -> use error.message)
+    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
+    // console.log({ ...error });
+
+    dispatch({
+      type: USER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

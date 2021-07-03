@@ -7,12 +7,17 @@ import {
   getOrderById,
   updateOrderToPay,
   getMyOrders,
+  getOrders,
+  updateOrderToDelivered,
 } from '../controllers/orderController.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
-router.route('/').post(auth.isLogin, addOrderItems);
+router
+  .route('/')
+  .post(auth.isLogin, addOrderItems)
+  .get(auth.isLogin, auth.isAdmin, getOrders);
 
 // @desc    Get logged in user order
 // @route   PUT /api/orders/myorders
@@ -28,5 +33,12 @@ router.route('/:id').get(auth.isLogin, getOrderById);
 // @route   PUT /api/orders/:id/pay
 // @access  Private
 router.route('/:id/pay').put(auth.isLogin, updateOrderToPay);
+
+// @desc    Update order to delivered
+// @route   PUT /api/orders/:id/deliver
+// @access  Private
+router
+  .route('/:id/deliver')
+  .put(auth.isLogin, auth.isAdmin, updateOrderToDelivered);
 
 export default router;
