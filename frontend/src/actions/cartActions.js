@@ -53,7 +53,6 @@ export const saveShippingAddress = (data) => (dispatch) => {
     },
   });
 
-  // update localStorage after delete a product in cart
   localStorage.setItem('shippingAddress', JSON.stringify(data));
 };
 

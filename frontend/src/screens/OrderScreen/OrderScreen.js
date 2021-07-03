@@ -1,31 +1,43 @@
 import { useState, useEffect } from 'react';
 import { PayPalButton } from 'react-paypal-button-v2';
 import axios from 'axios';
-import { Row, Col, ListGroup, Card, Image } from 'react-bootstrap';
+import { Row, Col, ListGroup, Card, Image, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
-import { getOrderDetails, payOrder } from '../../actions/orderActions';
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from '../../actions/orderActions';
 import {
   ORDER_LIST_MY_RESET,
   ORDER_PAY_RESET,
+  ORDER_DELIVER_RESET,
 } from '../../constants/orderConstants';
+import { deleteModel } from 'mongoose';
 
 const OrderScreen = (props) => {
-  const { match } = props;
+  const { history, match } = props;
   const orderId = match.params.id;
   const dispatch = useDispatch();
 
   const [sdkReady, setSdkReady] = useState(false);
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const orderDetails = useSelector((state) => state.orderDetails);
-  const { loading, error, order } = orderDetails;
+  const { loading, error, success, order } = orderDetails;
 
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
-  if (!loading) {
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+  if (success) {
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
@@ -38,6 +50,10 @@ const OrderScreen = (props) => {
     );
   }
   useEffect(() => {
+    if (!userInfo) {
+      history.push('/login');
+    }
+
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
 
@@ -57,9 +73,14 @@ const OrderScreen = (props) => {
     // When the screen loading,
     // if order isn't exist || order._id not match orderId in params ||
     // Order has just been paid (->order has been updated in Backend)
-    if (!order || (order && order._id !== orderId) || successPay) {
-      // Reset orderPay object in Redux back to emty {}, then fetch orderDetails from Backend again
+    if (
+      !order ||
+      (order && order._id !== orderId) ||
+      successPay ||
+      successDeliver
+    ) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch({ type: ORDER_LIST_MY_RESET });
       dispatch(getOrderDetails(orderId));
     } else {
@@ -75,14 +96,18 @@ const OrderScreen = (props) => {
         }
       }
     }
-  }, [dispatch, order, orderId, successPay]);
+  }, [dispatch, history, order, orderId, successPay, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
   };
 
-  return loading ? (
+  const orderDeliverHandler = () => {
+    dispatch(deliverOrder(order));
+  };
+
+  return loading || !success ? (
     <Loader />
   ) : error ? (
     <Message variant='danger'>error</Message>
@@ -210,6 +235,21 @@ const OrderScreen = (props) => {
                   )}
                 </ListGroup.Item>
               )}
+              {loadingDeliver && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-block'
+                      onClick={orderDeliverHandler}
+                    >
+                      Mark As Deliver
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

@@ -25,8 +25,12 @@ import {
   USER_UPDATE_FAIL,
 } from '../constants/userContants';
 import axios from 'axios';
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
+import {
+  ORDER_DETAILS_RESET,
+  ORDER_LIST_MY_RESET,
+} from '../constants/orderConstants';
 import { toast } from 'react-toastify';
+import { CART_INFO_RESET } from '../constants/cartConstants';
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -74,11 +78,13 @@ export const login = (email, password) => async (dispatch) => {
 
 // logout action
 export const logout = () => (dispatch) => {
-  localStorage.removeItem('userInfo');
-  dispatch({ type: USER_LOGOUT });
+  localStorage.clear();
+  dispatch({ type: CART_INFO_RESET });
+  dispatch({ type: USER_LIST_RESET });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_LIST_MY_RESET });
-  dispatch({ type: USER_LIST_RESET });
+  dispatch({ type: ORDER_DETAILS_RESET });
+  dispatch({ type: USER_LOGOUT });
 };
 
 // register action
