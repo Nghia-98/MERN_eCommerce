@@ -19,6 +19,9 @@ const app = express();
 
 app.use(express.json());
 
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 // fix statusCode 304 - Not Modify
 app.disable('etag');
 
@@ -37,9 +40,6 @@ app.use('/api/upload', uploadRoutes);
 app.get('/api/config/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID);
 });
-
-const __dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // middleware handler 404 error
 app.use(notFound);

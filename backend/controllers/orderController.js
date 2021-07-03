@@ -89,4 +89,19 @@ const getMyOrders = async (req, res) => {
   res.json(orders);
 };
 
-export { addOrderItems, getOrderById, updateOrderToPay, getMyOrders };
+// @desc    Get all orders
+// @route   GET /api/orders/
+// @access  Private/Admin
+const getOrders = async (req, res) => {
+  const orders = await Order.find({});
+
+  res.json({ orders });
+};
+
+export {
+  addOrderItems,
+  getOrderById,
+  updateOrderToPay,
+  getMyOrders,
+  getOrders,
+};

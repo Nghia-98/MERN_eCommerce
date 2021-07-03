@@ -7,12 +7,16 @@ import {
   getOrderById,
   updateOrderToPay,
   getMyOrders,
+  getOrders,
 } from '../controllers/orderController.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
-router.route('/').post(auth.isLogin, addOrderItems);
+router
+  .route('/')
+  .post(auth.isLogin, addOrderItems)
+  .get(auth.isLogin, auth.isAdmin, getOrders);
 
 // @desc    Get logged in user order
 // @route   PUT /api/orders/myorders
