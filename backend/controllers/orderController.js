@@ -89,4 +89,44 @@ const getMyOrders = async (req, res) => {
   res.json(orders);
 };
 
-export { addOrderItems, getOrderById, updateOrderToPay, getMyOrders };
+// @desc    Get all orders
+// @route   GET /api/orders/
+// @access  Private/Admin
+const getOrders = async (req, res) => {
+  const orders = await Order.find({});
+
+  res.json({ orders });
+};
+
+// @desc    Update order to delivered
+// @route   PUT /api/orders/:id/deliver
+// @access  Private/Admin
+const updateOrderToDelivered = async (req, res) => {
+  const orderId = req.params.id;
+
+  const order = await Order.findById(orderId);
+
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    res.status(200).json({
+      message: 'Update order to delivered successfully!',
+      order: updatedOrder,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Update order to delivered failure!');
+  }
+};
+
+export {
+  addOrderItems,
+  getOrderById,
+  updateOrderToPay,
+  getMyOrders,
+  getOrders,
+  updateOrderToDelivered,
+};
