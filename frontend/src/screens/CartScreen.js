@@ -59,7 +59,7 @@ const CartScreen = (props) => {
                   <Row>
                     <Col md={2}>
                       <Image
-                        src={cartItem.image}
+                        src={`http://localhost:3000/${cartItem.image}`}
                         alt={cartItem.name}
                         fluid='true'
                       ></Image>

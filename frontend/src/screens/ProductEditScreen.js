@@ -75,32 +75,46 @@ const ProductEditScreen = ({ history, match }) => {
     });
   };
 
-  const uploadFileHandler = async (e) => {
+  const inputFileHandler = (e) => {
     const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('image', file);
-    setUploading(true);
-
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-
-      const { data } = await axios.post('/api/upload', formData, config);
-
-      setProductData({ ...productData, image: data.filePath });
-      setUploading(false);
-    } catch (error) {
-      console.error(error);
-      setUploading(false);
-    }
+    if (file) setProductData({ ...productData, image: file.name });
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(updateProduct({ _id: product._id, ...productData }));
+
+    const file = document.getElementById('inputFile').files[0];
+    console.log('file', file);
+    if (file) {
+      const formData = new FormData();
+      formData.append('image', file);
+      setUploading(true);
+
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+
+        const { data } = await axios.post('/api/upload', formData, config);
+        console.log('data.filePath', data.filePath);
+
+        setUploading(false);
+        dispatch(
+          updateProduct({
+            _id: product._id,
+            ...productData,
+            image: data.filePath,
+          })
+        );
+      } catch (error) {
+        console.error(error);
+        setUploading(false);
+      }
+    } else {
+      dispatch(updateProduct({ _id: product._id, ...productData }));
+    }
   };
 
   return (
@@ -139,10 +153,10 @@ const ProductEditScreen = ({ history, match }) => {
                 onChange={productDataOnChangeHandler}
               ></Form.Control>
               <Form.File
-                id='image-file'
+                id='inputFile'
                 label='Choose File'
                 custom
-                onChange={uploadFileHandler}
+                onChange={inputFileHandler}
               ></Form.File>
               {uploading && <Loader />}
             </Form.Group>
