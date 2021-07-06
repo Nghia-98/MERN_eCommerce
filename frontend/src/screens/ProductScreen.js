@@ -34,7 +34,7 @@ const ProductScreen = (props) => {
           props.history.goBack();
         }}
       >
-        <i class='fas fa-arrow-left'></i> Go Back
+        <i className='fas fa-arrow-left'></i> Go Back
       </div>
 
       {loading ? (

@@ -15,6 +15,7 @@ import {
   ORDER_LIST_MY_RESET,
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
+  ORDER_DETAILS_RESET,
 } from '../../constants/orderConstants';
 import { deleteModel } from 'mongoose';
 
@@ -58,6 +59,7 @@ const OrderScreen = (props) => {
       history.push('/login');
     }
 
+    // declare func embed paypal sdk js on the page
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
 
@@ -77,28 +79,35 @@ const OrderScreen = (props) => {
     // When the screen loading,
     // if order isn't exist || order._id not match orderId in params ||
     // Order has just been paid (->order has been updated in Backend)
-    if (
-      !order ||
-      (order && order._id !== orderId) ||
-      successPay ||
-      successDeliver
-    ) {
+    if (!order || (order && order._id !== orderId)) {
+      dispatch(getOrderDetails(orderId));
+      return;
+    }
+
+    // if orderDetails already fine
+    if (!order.isPaid) {
+      // if order not paid
+      if (!window.paypal) {
+        // if the PayPal SDK Script has not loaded
+        addPayPalScript();
+      } else {
+        // if the PayPal SDK Script has been load
+        setSdkReady(true);
+      }
+    }
+
+    // order paied success -> fetch new orderDetails from server and reset orderPay
+    if (successPay) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_LIST_MY_RESET });
+      dispatch({ type: ORDER_DETAILS_RESET }); // help fetch orderDetails again
+    }
+
+    // order updated to delivered -> fetch new orderDetails from server and reset orderDeliver
+    if (successDeliver) {
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch({ type: ORDER_LIST_MY_RESET });
-      dispatch(getOrderDetails(orderId));
-    } else {
-      // if orderDetails already fine
-      if (!order.isPaid) {
-        // if order not paid
-        if (!window.paypal) {
-          // if the PayPal SDK Script has not loaded
-          addPayPalScript();
-        } else {
-          // if the PayPal SDK Script has been load
-          setSdkReady(true);
-        }
-      }
+      dispatch({ type: ORDER_DETAILS_RESET }); // help fetch orderDetails again
     }
   }, [dispatch, history, order, orderId, successPay, successDeliver]);
 

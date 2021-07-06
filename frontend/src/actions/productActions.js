@@ -160,8 +160,6 @@ export const updateProduct = (productData) => async (dispatch, getState) => {
 
     dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data.product });
     toast.success('Update product successfully');
-
-    dispatch({ type: PRODUCT_UPDATE_RESET });
   } catch (err) {
     dispatch({
       type: PRODUCT_UPDATE_FAIL,
