@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
@@ -16,7 +16,7 @@ import {
 } from '../constants/productConstants';
 
 const ProductListScreen = (props) => {
-  const { history, match } = props;
+  const { history } = props;
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -57,6 +57,7 @@ const ProductListScreen = (props) => {
     }
 
     dispatch(listProducts());
+    // eslint-disable-next-line
   }, [userInfo, dispatch, history, productDeleteSuccess, productCreateSuccess]);
 
   const productCreateHandler = () => {

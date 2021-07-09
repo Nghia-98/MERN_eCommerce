@@ -17,7 +17,6 @@ import {
   ORDER_DELIVER_RESET,
   ORDER_DETAILS_RESET,
 } from '../../constants/orderConstants';
-import { deleteModel } from 'mongoose';
 
 const OrderScreen = (props) => {
   const { history, match } = props;
@@ -42,11 +41,11 @@ const OrderScreen = (props) => {
     error: errorDeliver,
   } = orderDeliver;
 
-  if (success) {
-    const addDecimals = (num) => {
-      return (Math.round(num * 100) / 100).toFixed(2);
-    };
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
 
+  if (success) {
     // Calculate prices
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => {
@@ -76,16 +75,20 @@ const OrderScreen = (props) => {
       document.body.appendChild(script);
     };
 
-    // When the screen loading,
-    // if order isn't exist || order._id not match orderId in params ||
-    // Order has just been paid (->order has been updated in Backend)
-    if (!order || (order && order._id !== orderId)) {
+    // When orderDetails in redux state is emty, not loading and not have err
+    if (!order && !loading && !error) {
+      dispatch(getOrderDetails(orderId));
+      return;
+    }
+
+    // when orderDetails in redux state !== orderDetails we want display on the page
+    if (order && order._id !== orderId) {
       dispatch(getOrderDetails(orderId));
       return;
     }
 
     // if orderDetails already fine
-    if (!order.isPaid) {
+    if (order && !order.isPaid) {
       // if order not paid
       if (!window.paypal) {
         // if the PayPal SDK Script has not loaded
@@ -109,7 +112,17 @@ const OrderScreen = (props) => {
       dispatch({ type: ORDER_LIST_MY_RESET });
       dispatch({ type: ORDER_DETAILS_RESET }); // help fetch orderDetails again
     }
-  }, [dispatch, history, order, orderId, successPay, successDeliver]);
+    // eslint-disable-next-line
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    order,
+    error,
+    orderId,
+    successPay,
+    successDeliver,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
@@ -120,10 +133,12 @@ const OrderScreen = (props) => {
     dispatch(deliverOrder(order));
   };
 
-  return loading || !success ? (
-    <Loader />
-  ) : error || errorDeliver ? (
+  // when component mounting fist time -> orderDetails.loading === undefined
+  // -> we need orderDetails.success === true to show orderDetails on the page
+  return error || errorDeliver ? (
     <Message variant='danger'>{error || errorDeliver}</Message>
+  ) : loading || !success ? (
+    <Loader />
   ) : (
     <>
       <h1>Order</h1>
@@ -194,7 +209,8 @@ const OrderScreen = (props) => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x ${item.price} = $
+                          {addDecimals(Number(item.qty) * Number(item.price))}
                         </Col>
                       </Row>
                     </ListGroup.Item>

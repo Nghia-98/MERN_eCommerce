@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import FormContainer from '../components/FormContainer';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { getProductDetails, updateProduct } from '../actions/productActions';
 import {
   PRODUCT_DETAILS_RESET,
@@ -37,7 +37,6 @@ const ProductEditScreen = ({ history, match }) => {
     loading: productUpdateLoading,
     error: productUpdateError,
     success: productUpdateSuccess,
-    product: productUpdated,
   } = useSelector((state) => state.productUpdate);
 
   useEffect(() => {
@@ -65,6 +64,7 @@ const ProductEditScreen = ({ history, match }) => {
         description: product.description,
       });
     }
+    // eslint-disable-next-line
   }, [dispatch, history, match, userInfo, product, productUpdateSuccess]);
 
   const productDataOnChangeHandler = (e) => {

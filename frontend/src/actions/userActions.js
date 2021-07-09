@@ -267,6 +267,7 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
       },
     };
 
+    // eslint-disable-next-line
     const { data } = await axios.delete(`/api/users/${userId}`, config);
 
     dispatch({ type: USER_DELETE_SUCCESS });
@@ -302,6 +303,7 @@ export const updateUser = (userData) => async (dispatch, getState) => {
       },
     };
 
+    // eslint-disable-next-line
     const { data } = await axios.put(
       `/api/users/${userData._id}`,
       userData,

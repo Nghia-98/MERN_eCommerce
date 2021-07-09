@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Row, Col, Button, ListGroup, Card, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import {
   ORDER_CREATE_RESET,
   ORDER_LIST_MY_RESET,
 } from '../constants/orderConstants';
+import { CART_INFO_RESET } from '../constants/cartConstants';
 
 const PlaceOrderScreen = (props) => {
   const { history } = props;
@@ -17,7 +18,7 @@ const PlaceOrderScreen = (props) => {
   const cart = useSelector((state) => state.cart);
   const orderCreate = useSelector((state) => state.orderCreate);
 
-  const { loading, success, error, order } = orderCreate;
+  const { success, error, order } = orderCreate;
 
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
@@ -42,6 +43,7 @@ const PlaceOrderScreen = (props) => {
     if (success) {
       // Reset orderCreate in redux -> get ready for create a new order
       dispatch({ type: ORDER_CREATE_RESET });
+      dispatch({ type: CART_INFO_RESET });
       dispatch({ type: ORDER_LIST_MY_RESET });
       history.push(`/order/${order._id}`);
     }
@@ -105,7 +107,8 @@ const PlaceOrderScreen = (props) => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x ${item.price} = $
+                          {addDecimals(Number(item.qty) * Number(item.price))}
                         </Col>
                       </Row>
                     </ListGroup.Item>

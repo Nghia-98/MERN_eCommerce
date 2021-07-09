@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,7 +39,7 @@ const UserListScreen = (props) => {
   return (
     <>
       <h1>Users</h1>
-      {loading ? (
+      {loading || userDeleteLoading ? (
         <Loader />
       ) : error || userDeleteError ? (
         <Message variant='danger'>{error || userDeleteError}</Message>
