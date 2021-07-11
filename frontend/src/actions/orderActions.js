@@ -44,9 +44,9 @@ export const createOrder = (orderData) => async (dispatch, getState) => {
     });
   } catch (err) {
     // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
+    // 1. error from client, network err -> (use error.message)
+    // 2. error response from backend server (http err response) -> (use error.response.data)
+
     dispatch({
       type: ORDER_CREATE_FAIL,
       payload:
@@ -80,10 +80,6 @@ export const getOrderDetails = (orderId) => async (dispatch, getState) => {
       payload: data,
     });
   } catch (err) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
     dispatch({
       type: ORDER_DETAILS_FAIL,
       payload:
@@ -123,10 +119,6 @@ export const payOrder =
         payload: data,
       });
     } catch (err) {
-      // there are 2 kind of error
-      // 1. error from client ( -> use error.message)
-      // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-      // console.log({ ...error });
       dispatch({
         type: ORDER_PAY_FAIL,
         payload:
@@ -160,10 +152,6 @@ export const getOrderListMy = () => async (dispatch, getState) => {
       payload: data,
     });
   } catch (err) {
-    // there are 2 kind of error
-    // 1. error from client, network err ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
     dispatch({
       type: ORDER_LIST_MY_FAIL,
       payload:
