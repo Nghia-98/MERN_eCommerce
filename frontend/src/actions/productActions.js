@@ -16,6 +16,9 @@ import {
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
   PRODUCT_UPDATE_FAIL,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
 } from '../constants/productConstants.js';
 import { toast } from 'react-toastify';
 
@@ -163,3 +166,43 @@ export const updateProduct = (productData) => async (dispatch, getState) => {
     });
   }
 };
+
+export const createProductReview =
+  (productId, review) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      // eslint-disable-next-line
+      const { data } = await axios.post(
+        `/api/products/${productId}/reviews`,
+        review,
+        config
+      );
+
+      dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS, payload: data.product });
+      toast.success('Review submitted successfully');
+    } catch (err) {
+      const errorMessage =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_FAIL,
+        payload: errorMessage,
+      });
+
+      toast.error(errorMessage);
+    }
+  };
