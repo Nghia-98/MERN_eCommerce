@@ -6,7 +6,16 @@ import 'express-async-errors';
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
-  const products = await Product.find({});
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i',
+        },
+      }
+    : {};
+
+  const products = await Product.find({ ...keyword });
 
   if (products) {
     res.json(products);

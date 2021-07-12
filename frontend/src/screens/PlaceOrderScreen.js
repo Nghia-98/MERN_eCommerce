@@ -16,8 +16,8 @@ const PlaceOrderScreen = (props) => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
-  const orderCreate = useSelector((state) => state.orderCreate);
 
+  const orderCreate = useSelector((state) => state.orderCreate);
   const { success, error, order } = orderCreate;
 
   const addDecimals = (num) => {

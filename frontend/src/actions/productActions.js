@@ -22,31 +22,33 @@ import {
 } from '../constants/productConstants.js';
 import { toast } from 'react-toastify';
 
-export const listProducts = () => async (dispatch) => {
-  try {
-    dispatch({ type: PRODUCT_LIST_REQUEST });
+export const listProducts =
+  (keyword = '') =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PRODUCT_LIST_REQUEST });
 
-    const { data } = await axios.get('/api/products');
-    console.log(data);
+      const { data } = await axios.get(`/api/products?keyword=${keyword}`);
+      console.log(data);
 
-    dispatch({
-      type: PRODUCT_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client, network err -> (use error.message)
-    // 2. error response from backend server (http err response) -> (use error.response.data)
+      dispatch({
+        type: PRODUCT_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      // there are 2 kind of error
+      // 1. error from client, network err -> (use error.message)
+      // 2. error response from backend server (http err response) -> (use error.response.data)
 
-    dispatch({
-      type: PRODUCT_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: PRODUCT_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getProductDetails = (id) => async (dispatch) => {
   try {

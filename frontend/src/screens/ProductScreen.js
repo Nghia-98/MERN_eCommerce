@@ -28,7 +28,6 @@ const ProductScreen = (props) => {
   const productReviewCreate = useSelector((state) => state.productReviewCreate);
   const {
     loading: loadingProductReviewCreate,
-    error: errorProductReviewCreate,
     success: successProductReviewCreate,
   } = productReviewCreate;
 
@@ -77,7 +76,7 @@ const ProductScreen = (props) => {
           <Row>
             <Col md={6}>
               <Image
-                src={`http://localhost:3000/${product.image}`}
+                src={`http://localhost:5000/${product.image}`}
                 alt={product.name}
                 fluid='true'
               />
@@ -177,30 +176,42 @@ const ProductScreen = (props) => {
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <Row>
-                      <Col>User name:</Col>
-                      <Col>
+                      <Col xs={4}>
+                        <span className='font-weight-bold'>User</span>:
+                      </Col>
+                      <Col xs={8}>
                         <strong>{review.name}</strong>
                       </Col>
                     </Row>
                     <Row>
-                      <Col>Rating: </Col>
-                      <Col>
-                        {' '}
-                        <Rating value={review.rating} />{' '}
+                      <Col xs={4}>
+                        <span className='font-weight-bold'>Rating:</span>
+                      </Col>
+                      <Col xs={8}>
+                        <Rating value={review.rating} />
                       </Col>
                     </Row>
                     <Row>
-                      <Col>Create at: </Col>
-                      <Col>
-                        {' '}
-                        <p>{review.createdAt.substring(0, 10)}</p>{' '}
+                      <Col xs={4}>
+                        <span className='font-weight-bold'>Create at:</span>
+                      </Col>
+                      <Col xs={8}>
+                        <p className='m-0'>
+                          {review.createdAt.substring(0, 10)}
+                        </p>
                       </Col>
                     </Row>
                     <Row>
-                      <Col>Review: </Col>
-                      <Col>
-                        {' '}
-                        <p>{review.comment}</p>{' '}
+                      <Col xs={4}>
+                        <span className='font-weight-bold'>Review:</span>
+                      </Col>
+                      <Col xs={12}>
+                        <p
+                          className='text-body px-1 m-0'
+                          style={{ letterSpacing: 'normal' }}
+                        >
+                          {review.comment}
+                        </p>
                       </Col>
                     </Row>
                   </ListGroup.Item>
