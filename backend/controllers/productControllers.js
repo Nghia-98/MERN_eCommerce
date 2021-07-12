@@ -6,6 +6,9 @@ import 'express-async-errors';
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
+  const pageSize = 2;
+  const pageNumber = Number(req.query.pageNumber) || 1;
+
   const keyword = req.query.keyword
     ? {
         name: {
@@ -15,10 +18,17 @@ export const getProducts = async (req, res) => {
       }
     : {};
 
-  const products = await Product.find({ ...keyword });
+  const totalProductsCount = await Product.countDocuments({ ...keyword });
+  const products = await Product.find({ ...keyword })
+    .limit(pageSize)
+    .skip((pageNumber - 1) * pageSize);
 
   if (products) {
-    res.json(products);
+    res.json({
+      products,
+      pageNumber,
+      totalPagesNumber: Math.ceil(totalProductsCount / pageSize),
+    });
   } else {
     res.status(404).json({ message: 'The product list is empty !' });
   }
