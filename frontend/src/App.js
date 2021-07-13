@@ -43,6 +43,10 @@ const App = () => {
             component={ProductListScreen}
             exact
           />
+          <Route
+            path='/admin/productlist/:pageNumber'
+            component={ProductListScreen}
+          />
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/admin/orderlist' component={OrderListScreen} />
           <Route

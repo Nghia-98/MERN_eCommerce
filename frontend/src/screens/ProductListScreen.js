@@ -5,6 +5,7 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
 import {
   listProducts,
   deleteProduct,
@@ -16,14 +17,16 @@ import {
 } from '../constants/productConstants';
 
 const ProductListScreen = (props) => {
-  const { history } = props;
+  const { history, match } = props;
   const dispatch = useDispatch();
+
+  const pageQueryNumber = match.params.pageNumber || 1;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
+  const { loading, error, products, currentPage, totalPages } = productList;
 
   const productDelete = useSelector((state) => state.productDelete);
   const {
@@ -56,9 +59,16 @@ const ProductListScreen = (props) => {
       history.push(`/admin/product/${productCreate._id}/edit`);
     }
 
-    dispatch(listProducts());
+    dispatch(listProducts('', pageQueryNumber));
     // eslint-disable-next-line
-  }, [userInfo, dispatch, history, productDeleteSuccess, productCreateSuccess]);
+  }, [
+    userInfo,
+    dispatch,
+    history,
+    productDeleteSuccess,
+    productCreateSuccess,
+    pageQueryNumber,
+  ]);
 
   const productCreateHandler = () => {
     dispatch(createProduct());
@@ -91,60 +101,67 @@ const ProductListScreen = (props) => {
       ) : products.length === 0 ? (
         <Message variant='info'>There are no product</Message>
       ) : (
-        <Table striped hover responsive bordered className='table-sm'>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>PRICE</th>
-              <th>CATEGORY</th>
-              <th>BRAND</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <>
+          <Table striped hover responsive bordered className='table-sm'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>CATEGORY</th>
+                <th>BRAND</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {products.map((product) => {
-              return (
-                <tr key={product._id}>
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>${product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
-                  <td>
-                    <LinkContainer to={`/product/${product._id}`}>
+            <tbody>
+              {products.map((product) => {
+                return (
+                  <tr key={product._id}>
+                    <td>{product._id}</td>
+                    <td>{product.name}</td>
+                    <td>${product.price}</td>
+                    <td>{product.category}</td>
+                    <td>{product.brand}</td>
+                    <td>
+                      <LinkContainer to={`/product/${product._id}`}>
+                        <Button
+                          variant='light'
+                          className='btn-sm btn-outline-info mr-1 mb-1'
+                        >
+                          Details
+                        </Button>
+                      </LinkContainer>
+
+                      <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                        <Button
+                          variant='light'
+                          className='btn-sm btn-outline-info mr-1 mb-1'
+                        >
+                          <i className='fas fa-edit'></i>
+                        </Button>
+                      </LinkContainer>
+
                       <Button
-                        variant='light'
-                        className='btn-sm btn-outline-info mr-1 mb-1'
+                        variant='danger'
+                        className='btn-sm mb-1'
+                        style={{ borderWidth: '2px' }}
+                        onClick={() => productDeleteHandler(product._id)}
                       >
-                        Details
+                        <i className='fas fa-trash'></i>
                       </Button>
-                    </LinkContainer>
-
-                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button
-                        variant='light'
-                        className='btn-sm btn-outline-info mr-1 mb-1'
-                      >
-                        <i className='fas fa-edit'></i>
-                      </Button>
-                    </LinkContainer>
-
-                    <Button
-                      variant='danger'
-                      className='btn-sm mb-1'
-                      style={{ borderWidth: '2px' }}
-                      onClick={() => productDeleteHandler(product._id)}
-                    >
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+          <Paginate
+            totalPages={totalPages}
+            currentPage={currentPage}
+            isAdmin={true}
+          />
+        </>
       )}
     </>
   );
