@@ -20,7 +20,8 @@ const ProductListScreen = (props) => {
   const { history, match } = props;
   const dispatch = useDispatch();
 
-  const pageQueryNumber = match.params.pageNumber || 1;
+  const KeywordAdminParam = match.params.keyword || '';
+  const pageNumberParam = match.params.pageNumber || 1;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -59,7 +60,9 @@ const ProductListScreen = (props) => {
       history.push(`/admin/product/${productCreate._id}/edit`);
     }
 
-    dispatch(listProducts('', pageQueryNumber));
+    dispatch(
+      listProducts({ keyword: KeywordAdminParam, pageNumber: pageNumberParam })
+    );
     // eslint-disable-next-line
   }, [
     userInfo,
@@ -67,7 +70,8 @@ const ProductListScreen = (props) => {
     history,
     productDeleteSuccess,
     productCreateSuccess,
-    pageQueryNumber,
+    KeywordAdminParam,
+    pageNumberParam,
   ]);
 
   const productCreateHandler = () => {
@@ -159,6 +163,7 @@ const ProductListScreen = (props) => {
           <Paginate
             totalPages={totalPages}
             currentPage={currentPage}
+            keyword={KeywordAdminParam}
             isAdmin={true}
           />
         </>

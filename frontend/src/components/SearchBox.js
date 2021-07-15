@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 
 const SearchBox = ({ history }) => {
+  const location = useLocation();
+  const isAdminFilter = location.pathname.includes('/admin/productlist');
+
   const [keyword, setKeyword] = useState('');
 
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      history.push(`/search/${keyword}`);
+      isAdminFilter
+        ? history.push(`/admin/productlist/search/${keyword}`)
+        : history.push(`/search/${keyword}`);
     } else {
-      history.push('/');
+      isAdminFilter ? history.push(`/admin/productlist`) : history.push('/');
     }
   };
 

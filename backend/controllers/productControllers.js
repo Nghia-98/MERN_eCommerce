@@ -6,7 +6,7 @@ import 'express-async-errors';
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
-  const pageSize = 5;
+  const pageSize = 2;
   const pageQueryNumber = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword

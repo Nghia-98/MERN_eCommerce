@@ -23,13 +23,13 @@ import {
 import { toast } from 'react-toastify';
 
 export const listProducts =
-  (keyword = '', pageQueryNumber = '') =>
+  ({ keyword = '', pageNumber = 1 }) =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
 
       const { data } = await axios.get(
-        `/api/products?keyword=${keyword}&pageNumber=${pageQueryNumber}`
+        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
       );
 
       dispatch({

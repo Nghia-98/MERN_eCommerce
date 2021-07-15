@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Pagination } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
 import { listProducts } from '../actions/productActions';
 import Loader from '../components/Loader';
@@ -8,8 +8,8 @@ import Message from '../components/Message';
 import Paginate from '../components/Paginate';
 
 const HomeScreen = ({ match }) => {
-  const keywordQueryStr = match.params.keyword || '';
-  const pageQueryNumber = match.params.pageNumber || 1;
+  const keywordUserParam = match.params.keyword || '';
+  const pageNumberParam = match.params.pageNumber || 1;
 
   const dispatch = useDispatch();
 
@@ -17,8 +17,10 @@ const HomeScreen = ({ match }) => {
   const { loading, error, products, currentPage, totalPages } = productList;
 
   useEffect(() => {
-    dispatch(listProducts(keywordQueryStr, pageQueryNumber));
-  }, [dispatch, keywordQueryStr, pageQueryNumber]);
+    dispatch(
+      listProducts({ keyword: keywordUserParam, pageNumber: pageNumberParam })
+    );
+  }, [dispatch, keywordUserParam, pageNumberParam]);
 
   return (
     <>
@@ -50,7 +52,7 @@ const HomeScreen = ({ match }) => {
           <Paginate
             totalPages={totalPages}
             currentPage={currentPage}
-            keywordQueryStr={keywordQueryStr ? keywordQueryStr : ''}
+            keyword={keywordUserParam}
           />
         </>
       )}
