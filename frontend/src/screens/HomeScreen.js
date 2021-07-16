@@ -6,6 +6,8 @@ import { listProducts } from '../actions/productActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Paginate from '../components/Paginate';
+import ProductCarousel from '../components/ProductCarousel';
+import { Link } from 'react-router-dom';
 
 const HomeScreen = ({ match }) => {
   const keywordUserParam = match.params.keyword || '';
@@ -24,6 +26,13 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
+      {!keywordUserParam ? (
+        <ProductCarousel />
+      ) : (
+        <Link to='/' className='btn btn-light'>
+          Go Back
+        </Link>
+      )}
       <h1>Lasted Product</h1>
       {loading ? (
         <Loader />
