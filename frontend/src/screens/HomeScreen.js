@@ -8,8 +8,9 @@ import Message from '../components/Message';
 import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
 import { Link } from 'react-router-dom';
+import Meta from '../components/Meta';
 
-const HomeScreen = ({ match }) => {
+const HomeScreen = ({ match, history }) => {
   const keywordUserParam = match.params.keyword || '';
   const pageNumberParam = match.params.pageNumber || 1;
 
@@ -29,9 +30,14 @@ const HomeScreen = ({ match }) => {
       {!keywordUserParam ? (
         <ProductCarousel />
       ) : (
-        <Link to='/' className='btn btn-light'>
-          Go Back
-        </Link>
+        <div
+          className='btn btn-light'
+          onClick={() => {
+            history.push('/');
+          }}
+        >
+          <i className='fas fa-arrow-left'></i> Go Back
+        </div>
       )}
       <h1>Lasted Product</h1>
       {loading ? (
@@ -42,6 +48,7 @@ const HomeScreen = ({ match }) => {
         <Message variant='info'>There are no product</Message>
       ) : (
         <>
+          <Meta />
           <Row>
             {products.map((product, index, arr) => {
               return (

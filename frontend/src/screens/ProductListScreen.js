@@ -15,6 +15,7 @@ import {
   PRODUCT_DELETE_RESET,
   PRODUCT_CREATE_RESET,
 } from '../constants/productConstants';
+import Meta from '../components/Meta';
 
 const ProductListScreen = (props) => {
   const { history, match } = props;
@@ -86,6 +87,7 @@ const ProductListScreen = (props) => {
 
   return (
     <>
+      <Meta title={`Proshop | Admin`} />
       <Row className='align-items-center'>
         <Col>
           <h1>Products</h1>

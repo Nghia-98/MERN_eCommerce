@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getOrderList } from '../actions/orderActions';
+import Meta from '../components/Meta';
 
 const OrderListScreen = (props) => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const OrderListScreen = (props) => {
 
   return (
     <>
+      <Meta title={`Proshop | Admin`} />
       <h1>Orders</h1>
       {loading ? (
         <Loader />

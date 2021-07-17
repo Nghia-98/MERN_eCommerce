@@ -27,6 +27,7 @@ export const getProducts = async (req, res) => {
     res.json({
       products,
       currentPage: pageQueryNumber,
+      // totalPages: Math.ceil(totalProductsCount / pageSize),
       totalPages: Math.ceil(totalProductsCount / pageSize),
     });
   } else {

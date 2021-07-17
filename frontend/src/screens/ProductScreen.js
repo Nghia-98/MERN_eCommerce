@@ -6,6 +6,7 @@ import Message from '../components/Message';
 import { Form } from 'react-bootstrap';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
+import Meta from '../components/Meta';
 import {
   getProductDetails,
   createProductReview,
@@ -58,21 +59,21 @@ const ProductScreen = (props) => {
 
   return (
     <>
-      <div
-        className='btn btn-light my-3'
-        onClick={() => {
-          props.history.goBack();
-        }}
-      >
-        <i className='fas fa-arrow-left'></i> Go Back
-      </div>
-
       {loading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
+          <Meta title={`${product.name}`} />
+          <div
+            className='btn btn-light my-3'
+            onClick={() => {
+              props.history.goBack();
+            }}
+          >
+            <i className='fas fa-arrow-left'></i> Go Back
+          </div>
           <Row>
             <Col md={6}>
               <Image
