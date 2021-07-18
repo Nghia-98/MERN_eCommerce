@@ -197,7 +197,7 @@ const OrderScreen = (props) => {
                       <Row>
                         <Col md={2}>
                           <Image
-                            src={`http://localhost:5000/${item.image}`}
+                            src={item.image}
                             alt={item.name}
                             fluid
                             rounded

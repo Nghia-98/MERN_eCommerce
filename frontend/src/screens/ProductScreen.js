@@ -76,11 +76,7 @@ const ProductScreen = (props) => {
           </div>
           <Row>
             <Col md={6}>
-              <Image
-                src={`http://localhost:5000/${product.image}`}
-                alt={product.name}
-                fluid='true'
-              />
+              <Image src={product.image} alt={product.name} fluid='true' />
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>
