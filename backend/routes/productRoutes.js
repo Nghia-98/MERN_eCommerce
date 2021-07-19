@@ -8,6 +8,7 @@ import {
   updateProduct,
   createProductReview,
   getTopProducts,
+  getAllProducts,
 } from '../controllers/productControllers.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -18,6 +19,8 @@ router
   .route('/')
   .get(getProducts)
   .post(auth.isLogin, auth.isAdmin, createProduct);
+
+router.get('/all', getAllProducts);
 
 router.get('/top', getTopProducts);
 
