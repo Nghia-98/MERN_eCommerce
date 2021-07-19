@@ -2,7 +2,7 @@
   "name": "proshop_ecommerce",
   "version": "1.0.0",
   "engines": {
-    "node": "14.16.1"
+    "node": "14.16"
   },
   "description": "",
   "main": "server.js",
