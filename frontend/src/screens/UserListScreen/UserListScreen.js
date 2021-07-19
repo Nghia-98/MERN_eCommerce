@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import Message from '../components/Message';
-import Loader from '../components/Loader';
-import { deleteUser, getListUser } from '../actions/userActions';
+import Message from '../../components/Message';
+import Loader from '../../components/Loader';
+import { deleteUser, getListUser } from '../../actions/userActions';
+import Meta from '../../components/Meta';
 
 const UserListScreen = (props) => {
   const dispatch = useDispatch();
@@ -38,8 +39,9 @@ const UserListScreen = (props) => {
 
   return (
     <>
+      <Meta title={`Proshop | Admin`} />
       <h1>Users</h1>
-      {loading ? (
+      {loading || userDeleteLoading ? (
         <Loader />
       ) : error || userDeleteError ? (
         <Message variant='danger'>{error || userDeleteError}</Message>
@@ -76,7 +78,10 @@ const UserListScreen = (props) => {
                   </td>
                   <td>
                     <LinkContainer to={`user/${user._id}/edit`}>
-                      <Button variant='light' className='btn-sm'>
+                      <Button
+                        variant='light'
+                        className='btn-sm btn-outline-info mr-1'
+                      >
                         <i className='fas fa-edit'></i>
                       </Button>
                     </LinkContainer>
@@ -84,6 +89,7 @@ const UserListScreen = (props) => {
                     <Button
                       variant='danger'
                       className='btn-sm'
+                      style={{ borderWidth: '2px' }}
                       onClick={() => userDeleteHandler(user._id)}
                     >
                       <i className='fas fa-trash'></i>

@@ -8,8 +8,6 @@ import {
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
   ORDER_PAY_FAIL,
-  ORDER_PAY_RESET,
-  ORDER_CREATE_RESET,
   ORDER_LIST_MY_REQUEST,
   ORDER_LIST_MY_SUCCESS,
   ORDER_LIST_MY_FAIL,
@@ -19,7 +17,6 @@ import {
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
   ORDER_DELIVER_FAIL,
-  ORDER_DELIVER_RESET,
 } from '../constants/orderConstants';
 import axios from 'axios';
 
@@ -47,9 +44,9 @@ export const createOrder = (orderData) => async (dispatch, getState) => {
     });
   } catch (err) {
     // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
+    // 1. error from client, network err -> (use error.message)
+    // 2. error response from backend server (http err response) -> (use error.response.data)
+
     dispatch({
       type: ORDER_CREATE_FAIL,
       payload:
@@ -83,10 +80,6 @@ export const getOrderDetails = (orderId) => async (dispatch, getState) => {
       payload: data,
     });
   } catch (err) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
     dispatch({
       type: ORDER_DETAILS_FAIL,
       payload:
@@ -126,10 +119,6 @@ export const payOrder =
         payload: data,
       });
     } catch (err) {
-      // there are 2 kind of error
-      // 1. error from client ( -> use error.message)
-      // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-      // console.log({ ...error });
       dispatch({
         type: ORDER_PAY_FAIL,
         payload:
@@ -163,10 +152,6 @@ export const getOrderListMy = () => async (dispatch, getState) => {
       payload: data,
     });
   } catch (err) {
-    // there are 2 kind of error
-    // 1. error from client, network err ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
     dispatch({
       type: ORDER_LIST_MY_FAIL,
       payload:

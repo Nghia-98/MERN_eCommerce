@@ -3,6 +3,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,react
 
 ### Node ###
+
+frontend/build
+
 # Logs
 logs
 *.log

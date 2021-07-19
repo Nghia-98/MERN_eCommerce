@@ -6,6 +6,8 @@ import {
   deleteProductById,
   createProduct,
   updateProduct,
+  createProductReview,
+  getTopProducts,
 } from '../controllers/productControllers.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -16,6 +18,10 @@ router
   .route('/')
   .get(getProducts)
   .post(auth.isLogin, auth.isAdmin, createProduct);
+
+router.get('/top', getTopProducts);
+
+router.route('/:id/reviews').post(auth.isLogin, createProductReview);
 
 // @desc: Fetch, Delete single product
 // @route: GET, DELETE /api/products/:id

@@ -62,30 +62,35 @@ const ProfileScreen = ({ history, location }) => {
     }
   };
 
-  //console.log('Above of useEffect has called !');
-
   useEffect(() => {
-    //console.log('Inside useEffect has called !');
-
     // if user is not logged in
     if (!userInfo) {
       history.push('/login');
-    } else {
-      // if userDetails.user emty
-      if (!user.name || user.name !== userInfo.name) {
-        // fetch user & orders info from server
+      return;
+    }
+
+    if (!user.name) {
+      if (loadingUserDetails || errorUserDetails) {
+        return;
+      } else {
         dispatch(getUserDetails('profile'));
-        //console.log('Dispatch Inside useEffect has called !');
+      }
+    } else {
+      if (user.name !== userInfo.name) {
+        dispatch(getUserDetails('profile'));
       } else {
         setName(user.name);
         setEmail(user.email);
       }
-
-      // orderListMy.orders in redux state is null/undefined
-      if (!orders) {
-        dispatch(getOrderListMy());
-      }
     }
+
+    // orderListMy.orders in redux state is null/undefined
+    if (!orders && !loadingOrderListMy) {
+      dispatch(getOrderListMy());
+      return;
+    }
+
+    // eslint-disable-next-line
   }, [dispatch, history, userInfo, user, orders]);
 
   //console.log('Below useEffect has called !');
