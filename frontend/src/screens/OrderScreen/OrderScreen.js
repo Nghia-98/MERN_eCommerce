@@ -15,8 +15,8 @@ import {
   ORDER_LIST_MY_RESET,
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
+  ORDER_DETAILS_RESET,
 } from '../../constants/orderConstants';
-import { deleteModel } from 'mongoose';
 
 const OrderScreen = (props) => {
   const { history, match } = props;
@@ -35,13 +35,17 @@ const OrderScreen = (props) => {
   const { loading: loadingPay, success: successPay } = orderPay;
 
   const orderDeliver = useSelector((state) => state.orderDeliver);
-  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+  const {
+    loading: loadingDeliver,
+    success: successDeliver,
+    error: errorDeliver,
+  } = orderDeliver;
+
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
 
   if (success) {
-    const addDecimals = (num) => {
-      return (Math.round(num * 100) / 100).toFixed(2);
-    };
-
     // Calculate prices
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => {
@@ -54,6 +58,7 @@ const OrderScreen = (props) => {
       history.push('/login');
     }
 
+    // declare func embed paypal sdk js on the page
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
 
@@ -70,33 +75,54 @@ const OrderScreen = (props) => {
       document.body.appendChild(script);
     };
 
-    // When the screen loading,
-    // if order isn't exist || order._id not match orderId in params ||
-    // Order has just been paid (->order has been updated in Backend)
-    if (
-      !order ||
-      (order && order._id !== orderId) ||
-      successPay ||
-      successDeliver
-    ) {
-      dispatch({ type: ORDER_PAY_RESET });
-      dispatch({ type: ORDER_DELIVER_RESET });
-      dispatch({ type: ORDER_LIST_MY_RESET });
+    // When orderDetails in redux state is emty, not loading and not have err
+    if (!order && !loading && !error) {
       dispatch(getOrderDetails(orderId));
-    } else {
-      // if orderDetails already fine
-      if (!order.isPaid) {
-        // if order not paid
-        if (!window.paypal) {
-          // if the PayPal SDK Script has not loaded
-          addPayPalScript();
-        } else {
-          // if the PayPal SDK Script has been load
-          setSdkReady(true);
-        }
+      return;
+    }
+
+    // when orderDetails in redux state !== orderDetails we want display on the page
+    if (order && order._id !== orderId) {
+      dispatch(getOrderDetails(orderId));
+      return;
+    }
+
+    // if orderDetails already fine
+    if (order && !order.isPaid) {
+      // if order not paid
+      if (!window.paypal) {
+        // if the PayPal SDK Script has not loaded
+        addPayPalScript();
+      } else {
+        // if the PayPal SDK Script has been load
+        setSdkReady(true);
       }
     }
-  }, [dispatch, history, order, orderId, successPay, successDeliver]);
+
+    // order paied success -> fetch new orderDetails from server and reset orderPay
+    if (successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_LIST_MY_RESET });
+      dispatch({ type: ORDER_DETAILS_RESET }); // help fetch orderDetails again
+    }
+
+    // order updated to delivered -> fetch new orderDetails from server and reset orderDeliver
+    if (successDeliver) {
+      dispatch({ type: ORDER_DELIVER_RESET });
+      dispatch({ type: ORDER_LIST_MY_RESET });
+      dispatch({ type: ORDER_DETAILS_RESET }); // help fetch orderDetails again
+    }
+    // eslint-disable-next-line
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    order,
+    error,
+    orderId,
+    successPay,
+    successDeliver,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
@@ -107,10 +133,12 @@ const OrderScreen = (props) => {
     dispatch(deliverOrder(order));
   };
 
-  return loading || !success ? (
+  // when component mounting fist time -> orderDetails.loading === undefined
+  // -> we need orderDetails.success === true to show orderDetails on the page
+  return error || errorDeliver ? (
+    <Message variant='danger'>{error || errorDeliver}</Message>
+  ) : loading || !success ? (
     <Loader />
-  ) : error ? (
-    <Message variant='danger'>error</Message>
   ) : (
     <>
       <h1>Order</h1>
@@ -169,7 +197,7 @@ const OrderScreen = (props) => {
                       <Row>
                         <Col md={2}>
                           <Image
-                            src={`http://localhost:3000/${item.image}`}
+                            src={item.image}
                             alt={item.name}
                             fluid
                             rounded
@@ -181,7 +209,8 @@ const OrderScreen = (props) => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                          {item.qty} x ${item.price} = $
+                          {addDecimals(Number(item.qty) * Number(item.price))}
                         </Col>
                       </Row>
                     </ListGroup.Item>

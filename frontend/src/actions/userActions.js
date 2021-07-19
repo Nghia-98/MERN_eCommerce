@@ -62,8 +62,7 @@ export const login = (email, password) => async (dispatch) => {
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client, network error ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
+    // 2. error response from backend server (http error response) (-> use error.response.data)
 
     // if err dispatch action to save err in redux state
     dispatch({
@@ -115,11 +114,6 @@ export const register = (name, email, password) => async (dispatch) => {
     // save userInfo after login success
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_REGISTER_FAIL,
@@ -156,11 +150,6 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     }
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_DETAILS_FAIL,
@@ -204,11 +193,6 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
     delete userDetails.token;
     dispatch({ type: USER_DETAILS_SUCCESS, payload: userDetails });
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     // if err dispatch action to save err in redux state
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
@@ -238,11 +222,6 @@ export const getListUser = () => async (dispatch, getState) => {
 
     dispatch({ type: USER_LIST_SUCCESS, payload: data });
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     dispatch({
       type: USER_LIST_FAIL,
       payload:
@@ -267,16 +246,12 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
       },
     };
 
+    // eslint-disable-next-line
     const { data } = await axios.delete(`/api/users/${userId}`, config);
 
     dispatch({ type: USER_DELETE_SUCCESS });
     toast.success('User deleted successfully!');
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     dispatch({
       type: USER_DELETE_FAIL,
       payload:
@@ -302,6 +277,7 @@ export const updateUser = (userData) => async (dispatch, getState) => {
       },
     };
 
+    // eslint-disable-next-line
     const { data } = await axios.put(
       `/api/users/${userData._id}`,
       userData,
@@ -311,11 +287,6 @@ export const updateUser = (userData) => async (dispatch, getState) => {
     dispatch({ type: USER_UPDATE_SUCCESS });
     toast.success('User updated successfully!');
   } catch (error) {
-    // there are 2 kind of error
-    // 1. error from client ( -> use error.message)
-    // 2. error response from defaultErrorHandler middleware on backend server (-> use error.response.data)
-    // console.log({ ...error });
-
     dispatch({
       type: USER_UPDATE_FAIL,
       payload:

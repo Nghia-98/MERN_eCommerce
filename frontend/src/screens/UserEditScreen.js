@@ -60,7 +60,7 @@ const UserEditScreen = (props) => {
       setEmail(user.email);
       setIsAdmin(user.isAdmin);
     }
-  }, [dispatch, history, user, userId, userUpdateSuccess]);
+  }, [dispatch, history, userInfo, user, userId, userUpdateSuccess]);
 
   const submitHandler = (e) => {
     e.preventDefault();

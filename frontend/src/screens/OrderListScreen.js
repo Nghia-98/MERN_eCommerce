@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getOrderList } from '../actions/orderActions';
+import Meta from '../components/Meta';
 
 const OrderListScreen = (props) => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const OrderListScreen = (props) => {
 
   return (
     <>
+      <Meta title={`Proshop | Admin`} />
       <h1>Orders</h1>
       {loading ? (
         <Loader />
@@ -68,7 +70,10 @@ const OrderListScreen = (props) => {
                   </td>
                   <td>
                     <LinkContainer to={`/order/${order._id}`}>
-                      <Button variant='light' className='btn-sm'>
+                      <Button
+                        variant='light'
+                        className='btn-sm btn-outline-info'
+                      >
                         Details
                       </Button>
                     </LinkContainer>
