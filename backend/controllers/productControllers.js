@@ -2,7 +2,20 @@ import Product from '../model/productModel.js';
 // import AsyncHandler from 'express-async-handler';
 import 'express-async-errors';
 
-// @desc:   Get all products
+// @des:    Get all products
+// @route: Get /api/products/all
+// @access: Public
+
+export const getAllProducts = async (req, res) => {
+  const products = await Product.find({});
+  if (products) {
+    res.json({ products });
+  } else {
+    res.status(404).json({ message: 'Product not found !' });
+  }
+};
+
+// @desc:   Get products per page
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
