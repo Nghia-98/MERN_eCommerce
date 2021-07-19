@@ -5,7 +5,7 @@
 ### Node ###
 
 # production
-# frontend/build
+/frontend/build
 
 # Logs
 logs
