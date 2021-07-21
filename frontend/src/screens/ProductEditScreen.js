@@ -97,7 +97,7 @@ const ProductEditScreen = ({ history, match }) => {
           },
         };
 
-        const { data } = await axios.post('/api/upload', formData, config);
+        const { data } = await axios.post('/api/upload/s3', formData, config);
         console.log('data.filePath', data.filePath);
 
         setUploading(false);
