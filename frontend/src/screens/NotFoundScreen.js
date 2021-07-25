@@ -1,5 +1,4 @@
-import { Row, Col, Button, Card } from 'react-bootstrap';
-import Message from '../components/Message';
+import { Row, Col } from 'react-bootstrap';
 const NotFoundScreen = ({ history, location }) => {
   return (
     <>
