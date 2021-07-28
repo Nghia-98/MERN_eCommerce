@@ -37,12 +37,17 @@ const Paginate = ({
     }
   };
 
-  // if (totalPages === 1) return null;
-
   return (
+    // Types of pagination_item we want to show :
+    // 1: Paginate action firt, next, prev, last
+    // 2: Pages {1} and {totalPages}
+    // 3: Page {currentPage}
+    // 4: pages {currentPage -1}, {currentPage -2}, {currentPage +1}, {currentPage +2}
+    // 5: Pagination.Ellipsis left & right of the currentPage (page {2} & page {totalPages -1})
+    // => We will hide any other pages
     <Pagination>
       <LinkContainer key={'first'} to={getFilterUrl(1)}>
-        <Pagination.First active={false} />
+        <Pagination.First />
       </LinkContainer>
 
       <LinkContainer
@@ -58,12 +63,10 @@ const Paginate = ({
             <Pagination.Item active={x + 1 === currentPage}>
               {x + 1}
             </Pagination.Item>
-          ) : isSiblingsPage(x + 1) ? (
-            <Pagination.Item active={x + 1 === currentPage}>
-              {x + 1}
-            </Pagination.Item>
           ) : x + 1 === currentPage ? (
             <Pagination.Item active={true}>{x + 1}</Pagination.Item>
+          ) : isSiblingsPage(x + 1) ? (
+            <Pagination.Item>{x + 1}</Pagination.Item>
           ) : x + 1 === 2 ? (
             <Pagination.Ellipsis />
           ) : x + 1 === totalPages - 1 ? (
