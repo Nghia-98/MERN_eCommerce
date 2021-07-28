@@ -37,12 +37,10 @@ const Paginate = ({
     }
   };
 
-  // if (totalPages === 1) return null;
-
   return (
     <Pagination>
       <LinkContainer key={'first'} to={getFilterUrl(1)}>
-        <Pagination.First active={false} />
+        <Pagination.First />
       </LinkContainer>
 
       <LinkContainer
