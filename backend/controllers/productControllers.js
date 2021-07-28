@@ -40,8 +40,8 @@ export const getProducts = async (req, res) => {
     res.json({
       products,
       currentPage: pageQueryNumber,
-      // totalPages: Math.ceil(totalProductsCount / pageSize),
       totalPages: Math.ceil(totalProductsCount / pageSize),
+      // totalPages: 20,
     });
   } else {
     res.status(404).json({ message: 'The product list is empty !' });
