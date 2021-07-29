@@ -71,13 +71,13 @@ const LoginScreen = (props) => {
         </Form.Group>
 
         <Button type='submit' variant='primary' block>
-          Sign In
+          Continue
         </Button>
       </Form>
 
       <Row>
         <Col>
-          <p className='text-center my-2'>Or</p>
+          <p className='text-center my-3'>or Connect With Social Media</p>
         </Col>
       </Row>
 
@@ -85,8 +85,8 @@ const LoginScreen = (props) => {
         <Col>
           <FacebookLogin
             appId='231911432117995'
-            cssClass='btn btn__facebook'
-            textButton='Đăng nhập với Facebook'
+            cssClass='btn__social btn__facebook'
+            textButton='Login With Facebook'
             fields='name,email,picture'
             callback={responseFacebook}
           />
@@ -94,32 +94,24 @@ const LoginScreen = (props) => {
       </Row>
 
       <Row>
-        {/* <Col>
-        <GoogleLogin
-            clientId='565230475014-pdkesqgro3icang0n1bb5rcf6q9qgqc3.apps.googleusercontent.com'
-            render={renderProps => (
-              <button
-                className='btn btn__google'
-                onClick={renderProps.onClick}
-              >
-                Đăng nhập với Google
-                          </button>
-            )}
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
-          />
-        </Col> */}
         <Col>
           <GoogleLogin
             clientId='345201133892-pmeecrimpngn094rtio9jjisl8hon28r.apps.googleusercontent.com'
-            buttonText='Login'
+            render={(renderProps) => (
+              <button
+                className='btn__social btn__google'
+                onClick={renderProps.onClick}
+              >
+                Login With Google
+              </button>
+            )}
             onSuccess={responseGoogle}
             onFailure={responseGoogle}
           />
         </Col>
       </Row>
 
-      <Row className='py-3'>
+      <Row className='mt-3 py-2'>
         <Col>
           New Customer ?{' '}
           <Link to={redirect ? `/register?redirect=${redirect}` : `/register`}>

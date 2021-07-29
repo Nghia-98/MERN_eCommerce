@@ -20,7 +20,7 @@ h3 {
   margin: 0.1rem;
 }
 
-/* carousel */
+/* ---------------- carousel ------------------ */
 .carousel-item-next,
 .carousel-item-prev,
 .carousel-item.active {
@@ -52,9 +52,31 @@ h3 {
   }
 }
 
-/* Pagination */
+/* --------------- Pagination --------------- */
 .pagination {
   margin-top: 2rem;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+/* ----------- Login Screen --------------*/
+.btn__social {
+  display: block;
+  border-radius: 4px !important;
+  border: none !important;
+  font-size: 0.765625rem;
+  text-transform: uppercase;
+  height: 45px !important;
+  letter-spacing: 1px;
+}
+.btn__facebook {
+  color: white;
+  background: #2d91ff;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.btn__google {
+  background: #ededed;
+  color: rgb(90 90 90) !important;
+  width: 100%;
 }
