@@ -64,6 +64,10 @@ npm run dev
 
 # Run backend only
 npm run server
+
+# Run frontend with HTTPS to use Facebook login
+cd frontend
+($env:HTTPS = "true") -and (npm start)
 ```
 
 ## Build & Deploy
@@ -100,7 +104,6 @@ john@example.com (Customer)
 jane@example.com (Customer)
 123456
 ```
-
 
 ## License
 

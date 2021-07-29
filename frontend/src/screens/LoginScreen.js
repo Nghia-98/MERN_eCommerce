@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { login } from '../actions/userActions';
@@ -27,6 +29,14 @@ const LoginScreen = (props) => {
       //
     };
   }, [history, userInfo, redirect]);
+
+  const responseFacebook = (dataResponse) => {
+    console.log(dataResponse);
+  };
+
+  const responseGoogle = (dataResponse) => {
+    console.log(dataResponse);
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -60,10 +70,55 @@ const LoginScreen = (props) => {
           ></Form.Control>
         </Form.Group>
 
-        <Button type='submit' variant='primary'>
+        <Button type='submit' variant='primary' block>
           Sign In
         </Button>
       </Form>
+
+      <Row>
+        <Col>
+          <p className='text-center my-2'>Or</p>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <FacebookLogin
+            appId='231911432117995'
+            cssClass='btn btn__facebook'
+            textButton='Đăng nhập với Facebook'
+            fields='name,email,picture'
+            callback={responseFacebook}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        {/* <Col>
+        <GoogleLogin
+            clientId='565230475014-pdkesqgro3icang0n1bb5rcf6q9qgqc3.apps.googleusercontent.com'
+            render={renderProps => (
+              <button
+                className='btn btn__google'
+                onClick={renderProps.onClick}
+              >
+                Đăng nhập với Google
+                          </button>
+            )}
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+          />
+        </Col> */}
+        <Col>
+          <GoogleLogin
+            clientId='345201133892-pmeecrimpngn094rtio9jjisl8hon28r.apps.googleusercontent.com'
+            buttonText='Login'
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+          />
+        </Col>
+      </Row>
+
       <Row className='py-3'>
         <Col>
           New Customer ?{' '}
