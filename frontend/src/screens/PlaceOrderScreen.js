@@ -45,6 +45,7 @@ const PlaceOrderScreen = (props) => {
       dispatch({ type: ORDER_CREATE_RESET });
       dispatch({ type: CART_INFO_RESET });
       dispatch({ type: ORDER_LIST_MY_RESET });
+      localStorage.removeItem('cartItems');
       history.push(`/order/${order._id}`);
     }
     // eslint-disable-next-line

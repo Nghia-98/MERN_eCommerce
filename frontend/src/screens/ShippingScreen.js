@@ -37,6 +37,7 @@ const ShippingScreen = (props) => {
             value={address}
             required
             onChange={(e) => setAddress(e.target.value)}
+            autoFocus
           ></Form.Control>
         </Form.Group>
         {/* City */}

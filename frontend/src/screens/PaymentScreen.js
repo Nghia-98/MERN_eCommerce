@@ -42,6 +42,7 @@ const PaymentScreen = (props) => {
               value='PayPal'
               checked
               onChange={(e) => setPaymentMethod(e.target.value)}
+              autoFocus
             ></Form.Check>
 
             <Form.Check
