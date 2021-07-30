@@ -25,7 +25,7 @@ const ShippingScreen = (props) => {
 
   return (
     <FormContainer>
-      <CheckoutSteps step1 step2 />
+      <CheckoutSteps step1 step2 activeStep2 />
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
         {/* Address */}
