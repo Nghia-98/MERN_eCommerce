@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -14,6 +14,7 @@ import {
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 
 const ProductScreen = (props) => {
+  const location = useLocation();
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -55,6 +56,11 @@ const ProductScreen = (props) => {
         comment,
       })
     );
+  };
+
+  const loginToReviewHandler = () => {
+    // console.log('location \n', location);
+    props.history.push(`/login?redirect=${location.pathname}`);
   };
 
   return (
@@ -251,7 +257,17 @@ const ProductScreen = (props) => {
                     </Form>
                   ) : (
                     <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review{' '}
+                      Please{' '}
+                      <span
+                        style={{
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                        }}
+                        onClick={loginToReviewHandler}
+                      >
+                        Login
+                      </span>{' '}
+                      to write a review{' '}
                     </Message>
                   )}
                 </ListGroup.Item>

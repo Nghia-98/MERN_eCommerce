@@ -45,6 +45,7 @@ const PlaceOrderScreen = (props) => {
       dispatch({ type: ORDER_CREATE_RESET });
       dispatch({ type: CART_INFO_RESET });
       dispatch({ type: ORDER_LIST_MY_RESET });
+      localStorage.removeItem('cartItems');
       history.push(`/order/${order._id}`);
     }
     // eslint-disable-next-line
@@ -66,7 +67,7 @@ const PlaceOrderScreen = (props) => {
 
   return (
     <>
-      <CheckoutSteps step1 step2 step3 step4 />
+      <CheckoutSteps step1 step2 step3 step4 activeStep4 />
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
