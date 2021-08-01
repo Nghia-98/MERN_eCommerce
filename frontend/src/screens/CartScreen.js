@@ -46,68 +46,85 @@ const CartScreen = (props) => {
   return (
     <Row>
       <Col md={8}>
-        <h1>Shopping Cart</h1>
+        <h1 className='my-0'>Shopping Cart</h1>
         {cartItems.length === 0 ? (
           <Message>
-            Your cart is emty <Link to='/'>Go Back</Link>
+            Your cart is emty{' '}
+            <Link to='/'>
+              <i className='fas fa-arrow-left'></i> Back To Shopping
+            </Link>
           </Message>
         ) : (
-          <ListGroup variant='flush'>
-            {cartItems.map((cartItem, index, arr) => {
-              return (
-                <ListGroup.Item key={cartItem.product}>
-                  <Row>
-                    <Col md={2}>
-                      <Image
-                        src={cartItem.image}
-                        alt={cartItem.name}
-                        fluid='true'
-                      ></Image>
-                    </Col>
-                    <Col md={3}>
-                      <Link to={`/product/${cartItem.product}`}>
-                        {cartItem.name}
-                      </Link>
-                    </Col>
-                    <Col md={2}>${cartItem.price}</Col>
-                    <Col md={2}>
-                      <Form.Control
-                        style={{ padding: 0 }}
-                        as='select'
-                        value={cartItem.qty}
-                        onChange={(e) =>
-                          // Should not dispatch addToCart here becase it will fetch product from server again
-                          // while this product already existing in redux state & localStorage
-                          // => Todo: Need refactor - not use addToCart func middleware here
-                          // => use onChange={(e) => updateProductQuantityInCartHandler(cartItem.product, e.target.value)}
-                          dispatch(addToCart(cartItem.product, e.target.value))
-                        }
-                      >
-                        {[...Array(cartItem.countInStock)].map(
-                          (el, index, arr) => {
-                            return (
-                              <option key={index + 1} value={index + 1}>
-                                {index + 1}
-                              </option>
-                            );
+          <>
+            <div
+              className='btn btn-light mb-3'
+              onClick={() => {
+                props.history.push('/');
+              }}
+            >
+              <i className='fas fa-arrow-left'></i> Back To Shopping
+            </div>
+            <ListGroup variant='flush'>
+              {cartItems.map((cartItem, index, arr) => {
+                return (
+                  <ListGroup.Item key={cartItem.product}>
+                    <Row className='justify-content-start align-items-center'>
+                      <Col md={2}>
+                        <Image
+                          src={cartItem.image}
+                          alt={cartItem.name}
+                          fluid='true'
+                        ></Image>
+                      </Col>
+                      <Col md={5}>
+                        <Link to={`/product/${cartItem.product}`}>
+                          {cartItem.name}
+                        </Link>
+                      </Col>
+                      <Col md={2}>${cartItem.price}</Col>
+                      <Col md={2}>
+                        <Form.Control
+                          style={{ padding: 0 }}
+                          as='select'
+                          value={cartItem.qty}
+                          onChange={(e) =>
+                            // Should not dispatch addToCart here becase it will fetch product from server again
+                            // while this product already existing in redux state & localStorage
+                            // => Todo: Need refactor - not use addToCart func middleware here
+                            // => use onChange={(e) => updateProductQuantityInCartHandler(cartItem.product, e.target.value)}
+                            dispatch(
+                              addToCart(cartItem.product, e.target.value)
+                            )
                           }
-                        )}
-                      </Form.Control>
-                    </Col>
-                    <Col md={3}>
-                      <Button
-                        type='button'
-                        variant='light'
-                        onClick={() => removeFromCartHandler(cartItem.product)}
-                      >
-                        <i className='fas fa-trash'></i>
-                      </Button>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              );
-            })}
-          </ListGroup>
+                        >
+                          {[...Array(cartItem.countInStock)].map(
+                            (el, index, arr) => {
+                              return (
+                                <option key={index + 1} value={index + 1}>
+                                  {index + 1}
+                                </option>
+                              );
+                            }
+                          )}
+                        </Form.Control>
+                      </Col>
+                      <Col md={1}>
+                        <Button
+                          type='button'
+                          variant='light'
+                          onClick={() =>
+                            removeFromCartHandler(cartItem.product)
+                          }
+                        >
+                          <i className='fas fa-trash'></i>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                );
+              })}
+            </ListGroup>
+          </>
         )}
       </Col>
       <Col md={4}>

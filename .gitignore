@@ -5,7 +5,19 @@
 ### Node ###
 
 # production
-/frontend/build
+build
+build/
+frontend/build
+frontend/build/
+frontend/build/*
+*/frontend/build/*
+./frontend/build
+./frontend/build/
+frontend\build
+
+*/build/*
+/frontend/.env
+*/.env
 
 # Logs
 logs

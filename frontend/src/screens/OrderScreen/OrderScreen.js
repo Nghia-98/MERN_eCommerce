@@ -194,7 +194,7 @@ const OrderScreen = (props) => {
                 <ListGroup variant='flush'>
                   {order.orderItems.map((item, index) => (
                     <ListGroup.Item key={index}>
-                      <Row>
+                      <Row className='justify-content-start align-items-center'>
                         <Col md={2}>
                           <Image
                             src={item.image}

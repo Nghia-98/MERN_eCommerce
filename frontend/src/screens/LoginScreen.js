@@ -1,7 +1,10 @@
+import jwt from 'jsonwebtoken';
 import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { login } from '../actions/userActions';
@@ -28,10 +31,50 @@ const LoginScreen = (props) => {
     };
   }, [history, userInfo, redirect]);
 
+  const responseFacebook = (dataResponse) => {
+    //console.log(dataResponse);
+    const data = {
+      email: dataResponse.email,
+      username: dataResponse.name,
+      facebookId: dataResponse.userID,
+    };
+    if (!data.email) return;
+    handleLoginSocial(data);
+  };
+
+  const responseGoogle = (dataResponse) => {
+    console.log(dataResponse);
+    const data = {
+      email: dataResponse.profileObj.email,
+      username: dataResponse.profileObj.name,
+      googleId: dataResponse.profileObj.googleId,
+    };
+    if (!data.email) return;
+    handleLoginSocial(data);
+  };
+
+  const handleLoginSocial = async (_data) => {
+    console.log('data jwt', _data);
+    try {
+      const token = await jwt.sign(
+        _data,
+        process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      console.log('token', token);
+
+      dispatch(login({ token }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
 
-    dispatch(login(email, password));
+    dispatch(login({ email, password }));
   };
 
   return (
@@ -60,11 +103,48 @@ const LoginScreen = (props) => {
           ></Form.Control>
         </Form.Group>
 
-        <Button type='submit' variant='primary'>
-          Sign In
+        <Button type='submit' variant='primary' block>
+          Continue
         </Button>
       </Form>
-      <Row className='py-3'>
+
+      <Row>
+        <Col>
+          <p className='text-center my-3'>or Connect With Social Media</p>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <FacebookLogin
+            appId='231911432117995'
+            cssClass='btn__social btn__facebook'
+            textButton='Login With Facebook'
+            fields='name,email,picture'
+            callback={responseFacebook}
+          />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <GoogleLogin
+            clientId='345201133892-pmeecrimpngn094rtio9jjisl8hon28r.apps.googleusercontent.com'
+            render={(renderProps) => (
+              <button
+                className='btn__social btn__google'
+                onClick={renderProps.onClick}
+              >
+                Login With Google
+              </button>
+            )}
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+          />
+        </Col>
+      </Row>
+
+      <Row className='mt-3 py-2'>
         <Col>
           New Customer ?{' '}
           <Link to={redirect ? `/register?redirect=${redirect}` : `/register`}>

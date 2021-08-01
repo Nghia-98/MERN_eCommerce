@@ -69,7 +69,7 @@ const ProfileScreen = ({ history, location }) => {
       return;
     }
 
-    if (!user.name) {
+    if (!user || !user.name) {
       if (loadingUserDetails || errorUserDetails) {
         return;
       } else {
@@ -83,7 +83,6 @@ const ProfileScreen = ({ history, location }) => {
         setEmail(user.email);
       }
     }
-
     // orderListMy.orders in redux state is null/undefined
     if (!orders && !loadingOrderListMy) {
       dispatch(getOrderListMy());
@@ -100,7 +99,7 @@ const ProfileScreen = ({ history, location }) => {
     if (password !== confirmPassword) {
       setMessage('Passwords do not match !!!');
     } else {
-      dispatch(updateUserProfile({ _id: user._id, name, email, password }));
+      dispatch(updateUserProfile({ name, password }));
       setPassword('');
       setConfirmPassword('');
     }
@@ -119,7 +118,20 @@ const ProfileScreen = ({ history, location }) => {
         )}
         {success && <Message variant='success'>Profile Updated</Message>}
         {(loadingUserDetails || loadingUpdateProfile) && <Loader />}
+        {user.facebookId && <Message>Login with Facebook account !</Message>}
+        {user.googleId && <Message>Login with Google account !</Message>}
         <Form onSubmit={submitHandler}>
+          <Form.Group>
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type='email'
+              placeholder='Enter email'
+              value={email}
+              disabled
+              className='cursor-disabled'
+            ></Form.Control>
+          </Form.Group>
+
           <Form.Group controlId='name'>
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -131,35 +143,29 @@ const ProfileScreen = ({ history, location }) => {
             ></Form.Control>
           </Form.Group>
 
-          <Form.Group controlId='email'>
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type='email'
-              placeholder='Enter email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+          {!user.facebookId && !user.googleId && (
+            <>
+              <Form.Group controlId='password'>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type='password'
+                  placeholder='Enter password'
+                  value={password}
+                  onChange={passwordOnChangeHandler}
+                ></Form.Control>
+              </Form.Group>
 
-          <Form.Group controlId='password'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={passwordOnChangeHandler}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId='confirmPassword'>
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm password'
-              value={confirmPassword}
-              onChange={confirmPasswordOnChangeHandler}
-            ></Form.Control>
-          </Form.Group>
+              <Form.Group controlId='confirmPassword'>
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type='password'
+                  placeholder='Confirm password'
+                  value={confirmPassword}
+                  onChange={confirmPasswordOnChangeHandler}
+                ></Form.Control>
+              </Form.Group>
+            </>
+          )}
 
           <Button type='submit' variant='primary'>
             Update

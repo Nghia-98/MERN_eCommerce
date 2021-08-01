@@ -19,7 +19,7 @@ export const getAllProducts = async (req, res) => {
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
-  const pageSize = 2;
+  const pageSize = 1;
   const pageQueryNumber = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword
@@ -34,7 +34,8 @@ export const getProducts = async (req, res) => {
   const totalProductsCount = await Product.countDocuments({ ...keyword });
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
-    .skip((pageQueryNumber - 1) * pageSize);
+    .skip((pageQueryNumber - 1) * pageSize)
+    .sort({ _id: -1 });
 
   if (products) {
     res.json({

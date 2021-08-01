@@ -32,7 +32,6 @@ const UserEditScreen = (props) => {
   } = userUpdate;
 
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -57,20 +56,19 @@ const UserEditScreen = (props) => {
     } else {
       // userDetails is alright
       setName(user.name);
-      setEmail(user.email);
       setIsAdmin(user.isAdmin);
     }
   }, [dispatch, history, userInfo, user, userId, userUpdateSuccess]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateUser({ _id: userId, name, email, isAdmin }));
+    dispatch(updateUser({ _id: userId, name, isAdmin }));
   };
 
   return (
     <>
       <Link to='/admin/userList' className='btn btn-light my-3'>
-        <i class='fas fa-arrow-left'> Go Back</i>
+        <i className='fas fa-arrow-left'> Go Back</i>
       </Link>
       <FormContainer>
         <h1>Edit User</h1>
@@ -84,41 +82,51 @@ const UserEditScreen = (props) => {
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                autoFocus
-                type='text'
-                placeholder='Enter name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+          <>
+            {user.facebookId && (
+              <Form.Group>
+                <Message>Sign up with Facebook account !</Message>
+              </Form.Group>
+            )}
+            {user.googleId && (
+              <Form.Group>
+                <Message>Sign up with Google account !</Message>
+              </Form.Group>
+            )}
+            <Form onSubmit={submitHandler}>
+              <Form.Group>
+                <Form.Label>Email Address</Form.Label>
+                <Form.Control
+                  type='email'
+                  value={user.email}
+                  disabled
+                  className='cursor-disabled'
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='email'>
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type='email'
-                placeholder='Enter email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId='isAdmin'>
-              <Form.Check
-                type='checkbox'
-                label='Is Admin'
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-              ></Form.Check>
-            </Form.Group>
-
-            <Button type='submit' variant='primary'>
-              Update
-            </Button>
-          </Form>
+              <Form.Group controlId='name'>
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  autoFocus
+                  type='text'
+                  placeholder='Enter name'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group controlId='isAdmin'>
+                <Form.Check
+                  type='checkbox'
+                  label='Is Admin'
+                  checked={isAdmin}
+                  onChange={(e) => setIsAdmin(e.target.checked)}
+                ></Form.Check>
+              </Form.Group>
+              <Button type='submit' variant='primary'>
+                Update
+              </Button>
+            </Form>
+          </>
         )}
       </FormContainer>
     </>

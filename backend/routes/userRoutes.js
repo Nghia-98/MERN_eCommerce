@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   userRegister,
   userLogin,
+  userLoginSocial,
   getUserProfile,
   updateUserProfile,
   getUsers,
@@ -21,7 +22,11 @@ router.route('/')
 
 // prettier-ignore
 router.route('/login')
-  .post(userLogin);
+    .post(userLogin);
+
+// prettier-ignore
+router.route('/loginSocial')
+  .get(userLoginSocial);
 
 // prettier-ignore
 router.route('/profile')

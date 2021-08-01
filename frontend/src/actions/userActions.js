@@ -32,39 +32,56 @@ import {
 import { toast } from 'react-toastify';
 import { CART_INFO_RESET } from '../constants/cartConstants';
 
-export const login = (email, password) => async (dispatch) => {
+export const login = (dataObj) => async (dispatch) => {
+  const { email, password, token } = dataObj;
+  let userInfoResponse;
+
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
 
-    const config = {
-      header: {
-        'Content-Type': 'application/json',
-      },
-    };
+    if (token) {
+      // user login by social account
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
-    // send email, password to login route in server
-    const { data } = await axios.post(
-      '/api/users/login',
-      {
-        email,
-        password,
-      },
-      config
-    );
+      // send token contains social_account_info in req.header to server
+      const { data } = await axios.get('/api/users/loginSocial', config);
+      console.log('--------', data);
+
+      userInfoResponse = data;
+    } else {
+      // user login by email, password
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const { data } = await axios.post(
+        '/api/users/login',
+        { email, password },
+        config
+      );
+
+      userInfoResponse = data;
+    }
 
     // dispatch action for save userInfo in redux state (state.userLogin)
-    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: userInfoResponse });
 
-    // save userInfo after login success
-    localStorage.setItem('userInfo', JSON.stringify(data));
+    // save userInfo to localStorage after login success
+    localStorage.setItem('userInfo', JSON.stringify(userInfoResponse));
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client, network error ( -> use error.message)
     // 2. error response from backend server (http error response) (-> use error.response.data)
 
     // if err dispatch action to save err in redux state
+    console.log('login reducer', error);
     dispatch({
       type: USER_LOGIN_FAIL,
       payload:
@@ -94,7 +111,7 @@ export const register = (name, email, password) => async (dispatch) => {
     });
 
     const config = {
-      header: {
+      headers: {
         'Content-Type': 'application/json',
       },
     };
@@ -162,47 +179,53 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
 };
 
 // update user profile action
-export const updateUserProfile = (user) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: USER_UPDATE_PROFILE_REQUEST,
-    });
+export const updateUserProfile =
+  ({ name, password }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_UPDATE_PROFILE_REQUEST,
+      });
 
-    const { userInfo } = getState().userLogin;
+      const { userInfo } = getState().userLogin;
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    const { data } = await axios.put(`/api/users/profile`, user, config);
+      const { data } = await axios.put(
+        `/api/users/profile`,
+        { name, password },
+        config
+      );
 
-    // Dispatch action for save user info in redux state (reduxState.userUpdateProfile)
-    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+      // Dispatch action for save user info in redux state (reduxState.userUpdateProfile)
+      dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
 
-    // After update user info success, we must update userInfo in others field of reduxState & localStorage
-    // update reduxState.userLogin -> This help update user_name in Navbar
-    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-    // userLogin info must persistent storage in localstorage
-    //This will help reduxState.userLogin updated after page reload
-    localStorage.setItem('userInfo', JSON.stringify(data));
+      // After update user info success, we must update userInfo in others field of reduxState & localStorage
+      // update reduxState.userLogin -> This help update user_name in Navbar
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+      // userLogin info must persistent storage in localstorage
+      //This will help reduxState.userLogin updated after page reload
+      localStorage.setItem('userInfo', JSON.stringify(data));
 
-    // update reduxState.userDetails -> This help update info of form in ProfileScreen;
-    const userDetails = { ...data };
-    delete userDetails.token;
-    dispatch({ type: USER_DETAILS_SUCCESS, payload: userDetails });
-  } catch (error) {
-    // if err dispatch action to save err in redux state
-    dispatch({
-      type: USER_UPDATE_PROFILE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      // update reduxState.userDetails -> This help update info of form in ProfileScreen;
+      const userDetails = { ...data };
+      delete userDetails.token;
+      dispatch({ type: USER_DETAILS_SUCCESS, payload: userDetails });
+    } catch (error) {
+      // if err dispatch action to save err in redux state
+      dispatch({
+        type: USER_UPDATE_PROFILE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getListUser = () => async (dispatch, getState) => {
   try {
