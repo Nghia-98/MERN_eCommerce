@@ -20,6 +20,14 @@ h3 {
   margin: 0.1rem;
 }
 
+.cursor-disabled {
+  cursor: not-allowed;
+}
+
+.order-center {
+  text-align: center !important;
+}
+
 /* ---------------- carousel ------------------ */
 .carousel-item-next,
 .carousel-item-prev,

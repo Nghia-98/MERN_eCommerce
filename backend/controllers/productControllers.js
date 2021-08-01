@@ -34,7 +34,8 @@ export const getProducts = async (req, res) => {
   const totalProductsCount = await Product.countDocuments({ ...keyword });
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
-    .skip((pageQueryNumber - 1) * pageSize);
+    .skip((pageQueryNumber - 1) * pageSize)
+    .sort({ _id: -1 });
 
   if (products) {
     res.json({

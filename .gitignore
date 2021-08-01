@@ -6,6 +6,8 @@
 
 # production
 /frontend/build
+/frontend/.env
+*/.env
 
 # Logs
 logs

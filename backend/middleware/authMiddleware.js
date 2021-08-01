@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../utils/jwt.js';
 import 'express-async-errors';
 import User from '../model/userModel.js';
 
@@ -8,19 +8,19 @@ const isLogin = async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      // const decoded = jwt.verify(token, 'a');
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // console.log('-------------------------------', decoded);
-      req.user = await User.findById(decoded.id).select('-password');
-      //console.log(`req.user: ${req.user}`);
-      next();
-    } catch (error) {
-      console.error(error);
+    token = req.headers.authorization.split(' ')[1];
+
+    const { isValid, decoded } = verifyToken(token);
+
+    if (!isValid) {
       res.status(401);
       throw new Error('Not authorized, token failed !');
     }
+
+    console.log('-------------------------------', decoded);
+    req.user = await User.findById(decoded.id).select('-password');
+    console.log('authMiddler.js req.user', req.user);
+    next();
   }
 
   if (!token) {
@@ -31,10 +31,10 @@ const isLogin = async (req, res, next) => {
 
 const isAdmin = async (req, res, next) => {
   if (req.user && req.user.isAdmin) {
-    next()
+    next();
   } else {
-    res.status(401)
-    throw new Error('Not authorized as an admin')
+    res.status(401);
+    throw new Error('Not authorized as an admin');
   }
 };
 

@@ -94,7 +94,7 @@ const PlaceOrderScreen = (props) => {
                   {cart.cartItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
-                        <Col md={1}>
+                        <Col md={2}>
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -124,7 +124,7 @@ const PlaceOrderScreen = (props) => {
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
-                <h2>Order Summary</h2>
+                <h2 className='order-center'>Order Summary</h2>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>

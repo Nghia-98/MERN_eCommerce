@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,17 +32,49 @@ const LoginScreen = (props) => {
   }, [history, userInfo, redirect]);
 
   const responseFacebook = (dataResponse) => {
-    console.log(dataResponse);
+    //console.log(dataResponse);
+    const data = {
+      email: dataResponse.email,
+      username: dataResponse.name,
+      facebookId: dataResponse.userID,
+    };
+    if (!data.email) return;
+    handleLoginSocial(data);
   };
 
   const responseGoogle = (dataResponse) => {
-    console.log(dataResponse);
+    //console.log(dataResponse);
+    const data = {
+      email: dataResponse.profileObj.email,
+      username: dataResponse.profileObj.name,
+      googleId: dataResponse.profileObj.googleId,
+    };
+    if (!data.email) return;
+    handleLoginSocial(data);
+  };
+
+  const handleLoginSocial = async (_data) => {
+    console.log('data jwt', _data);
+    try {
+      const token = await jwt.sign(
+        _data,
+        process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      console.log('token', token);
+
+      dispatch(login({ token }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    dispatch(login(email, password));
+    dispatch(login({ email, password }));
   };
 
   return (

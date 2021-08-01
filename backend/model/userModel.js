@@ -3,18 +3,24 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
       unique: true,
+      immutable: true, // not allow to change email field
+    },
+    name: {
+      type: String,
+      required: true,
     },
     password: {
       type: String,
-      required: true,
+    },
+    facebookId: {
+      type: String,
+    },
+    googleId: {
+      type: String,
     },
     isAdmin: {
       type: Boolean,

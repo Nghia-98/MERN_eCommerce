@@ -68,7 +68,7 @@ const CartScreen = (props) => {
               {cartItems.map((cartItem, index, arr) => {
                 return (
                   <ListGroup.Item key={cartItem.product}>
-                    <Row>
+                    <Row className='justify-content-start align-items-center'>
                       <Col md={2}>
                         <Image
                           src={cartItem.image}
@@ -76,7 +76,7 @@ const CartScreen = (props) => {
                           fluid='true'
                         ></Image>
                       </Col>
-                      <Col md={3}>
+                      <Col md={5}>
                         <Link to={`/product/${cartItem.product}`}>
                           {cartItem.name}
                         </Link>
@@ -108,7 +108,7 @@ const CartScreen = (props) => {
                           )}
                         </Form.Control>
                       </Col>
-                      <Col md={3}>
+                      <Col md={1}>
                         <Button
                           type='button'
                           variant='light'

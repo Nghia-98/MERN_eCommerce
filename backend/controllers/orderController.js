@@ -93,7 +93,7 @@ const getMyOrders = async (req, res) => {
 // @route   GET /api/orders/
 // @access  Private/Admin
 const getOrders = async (req, res) => {
-  const orders = await Order.find({});
+  const orders = await Order.find({}).sort({ _id: -1 });
 
   res.json({ orders });
 };
