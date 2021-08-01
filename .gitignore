@@ -6,6 +6,7 @@
 
 # production
 build
+/frontend/build
 build/
 frontend/build
 frontend/build/
