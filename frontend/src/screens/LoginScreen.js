@@ -58,7 +58,8 @@ const LoginScreen = (props) => {
     try {
       const token = await jwt.sign(
         _data,
-        process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET,
+        // process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET, => Need Fix later
+        'mern_eCommerce',
         {
           expiresIn: '30d',
         }
