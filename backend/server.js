@@ -12,7 +12,8 @@ import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-dotenv.config();
+//require('dotenv').config();
+dotenv.config({ path: __dirname + '/.env' });
 
 connectDB();
 
