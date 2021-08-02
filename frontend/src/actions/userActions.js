@@ -50,7 +50,10 @@ export const login = (dataObj) => async (dispatch) => {
       };
 
       // send token contains social_account_info in req.header to server
-      const { data } = await axios.get('/api/users/loginSocial', config);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/loginSocial`,
+        config
+      );
       console.log('--------', data);
 
       userInfoResponse = data;
@@ -62,7 +65,7 @@ export const login = (dataObj) => async (dispatch) => {
         },
       };
       const { data } = await axios.post(
-        '/api/users/login',
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/login`,
         { email, password },
         config
       );
@@ -118,7 +121,7 @@ export const register = (name, email, password) => async (dispatch) => {
 
     // send email, password to login route in server
     const { data } = await axios.post(
-      '/api/users',
+      `${process.env.REACT_APP_BACKEND_HOST}/api/users`,
       { name, email, password },
       config
     );
@@ -159,11 +162,16 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
 
     if (id === 'profile') {
       // call route /api/users/profile -> get user details of user login (ProfileScreen)
-      const { data } = await axios.get('/api/users/profile', config);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/profile', config`
+      );
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } else {
       // call route /api/users/:id -> admin get user details of any user (UserEditScreen)
-      const { data } = await axios.get(`/api/users/${id}`, config);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/${id}`,
+        config
+      );
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     }
   } catch (error) {
@@ -196,7 +204,7 @@ export const updateUserProfile =
       };
 
       const { data } = await axios.put(
-        `/api/users/profile`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/profile`,
         { name, password },
         config
       );
@@ -241,7 +249,10 @@ export const getListUser = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/`, config);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/users/`,
+      config
+    );
 
     dispatch({ type: USER_LIST_SUCCESS, payload: data });
   } catch (error) {
@@ -270,7 +281,10 @@ export const deleteUser = (userId) => async (dispatch, getState) => {
     };
 
     // eslint-disable-next-line
-    const { data } = await axios.delete(`/api/users/${userId}`, config);
+    const { data } = await axios.delete(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/users/${userId}`,
+      config
+    );
 
     dispatch({ type: USER_DELETE_SUCCESS });
     toast.success('User deleted successfully!');
@@ -302,7 +316,7 @@ export const updateUser = (userData) => async (dispatch, getState) => {
 
     // eslint-disable-next-line
     const { data } = await axios.put(
-      `/api/users/${userData._id}`,
+      `${process.env.REACT_APP_BACKEND_HOST}/api/users/${userData._id}`,
       userData,
       config
     );

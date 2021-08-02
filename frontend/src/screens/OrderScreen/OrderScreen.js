@@ -60,7 +60,9 @@ const OrderScreen = (props) => {
 
     // declare func embed paypal sdk js on the page
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal');
+      const { data: clientId } = await axios.get(
+        `${process.env.REACT_APP_BACKEND_HOST}/api/config/paypal`
+      );
 
       // create & setup <script> tag to embed PayPal SDK JS on the page
       const script = document.createElement('script');

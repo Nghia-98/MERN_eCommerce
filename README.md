@@ -2,11 +2,11 @@
 
 > eCommerce platform built with the MERN stack & Redux.
 
-This is the MERN_eCommerce project for my studing [MERN eCommerce From Scratch](https://www.udemy.com/course/mern-ecommerce) course
+This is the MERN_eCommerce project for my studing course: [MERN eCommerce From Scratch](https://www.udemy.com/course/mern-ecommerce)
 
 ![screenshot](https://github.com/bradtraversy/proshop_mern/blob/master/uploads/Screen%20Shot%202020-09-29%20at%205.50.52%20PM.png)
 
-## Features
+## Features of the course
 
 - Full featured shopping cart
 - Product reviews and ratings
@@ -22,9 +22,16 @@ This is the MERN_eCommerce project for my studing [MERN eCommerce From Scratch](
 - PayPal / credit card integration
 - Database seeder (products & users)
 
-## Features I implement myself (features outside of the course)
+## Features outside the course (I research others resources and implement myself)
 
-- I will implement later :))
+- Handle resource not found in react app (404 - page not found)
+- Upload images to AWS S3 service
+- Search products in admin screen
+- Toast notify to show status of CRUD action
+- Custom pagination component without library
+- Split Frontend & Backend into Firebase static_web_app & Heroku Nodejs_app (Non-Functional)
+- Use React Lazy Import & React Suspense to fetch react app from host server faster (Non-Functional)
+- Login with social account (Facebook, Google)
 
 ## Usage
 
@@ -38,14 +45,33 @@ You can also install and setup Babel if you would like
 
 ### Env Variables
 
+## 1. Env file of Frontend React App
+
+Create a .env file in folder ./frotend and add the following
+
+```
+HTTPS = true
+REACT_APP_JWT_SECRET = your_jwt_secret
+REACT_APP_BACKEND_HOST = your_backend_host_address
+```
+
+## 1. Env file of Backend NodeJS App
+
 Create a .env file in then root and add the following
 
 ```
+HTTPS=true
 NODE_ENV = development
 PORT = 5000
-MONGO_URI = your mongodb uri
-JWT_SECRET = 'abc123'
-PAYPAL_CLIENT_ID = your paypal client id
+MONGO_URI = your_mongodb_uri
+JWT_SECRET = your_jwt_secret
+PAYPAL_CLIENT_ID = your_paypal_client_id
+
+AWS_ACCESS_KEY_ID = your_aws_access_id
+AWS_SECRET_ACCESS_KEY = your_aws_secret_key
+
+FACEBOOK_CLIENT_APP_ID = your_FB_ID
+GOOGLE_CLIENT_APP_ID = your_GG_ID
 ```
 
 ### Install Dependencies (frontend & backend)
@@ -59,26 +85,28 @@ npm install
 ### Run
 
 ```
-# Run frontend (:3000) & backend (:5000)
-npm run dev
+# Run fontend only
+cd frontend && npm run start
+or
+npm run client
 
 # Run backend only
 npm run server
 
-# Run frontend with HTTPS to use Facebook login
-cd frontend
-($env:HTTPS = "true") -and (npm start)
+# Run frontend (:3000) & backend (:5000)
+npm run dev
+
 ```
 
 ## Build & Deploy
 
 ```
-# Create frontend prod build
+# 1. Create frontend prod build.
 cd frontend
 npm run build
-```
 
-There is a Heroku postbuild script, so if you push to Heroku, no need to build manually for deployment to Heroku
+# 2. Create Firebase application -> Choose Hosting service and follow the instructions.
+```
 
 ### Seed Database
 
@@ -95,14 +123,14 @@ npm run data:destroy
 ```
 Sample User Logins
 
-admin@example.com (Admin)
-123456
+admin@gmail.com (Admin)
+admin
 
-john@example.com (Customer)
-123456
+john@gmail.com (Customer)
+john
 
-jane@example.com (Customer)
-123456
+jane@gmail.com (Customer)
+jane
 ```
 
 ## License
@@ -110,21 +138,3 @@ jane@example.com (Customer)
 The MIT License
 
 Copyright (c) 2020 Traversy Media https://traversymedia.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.

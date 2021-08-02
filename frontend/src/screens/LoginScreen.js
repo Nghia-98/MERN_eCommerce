@@ -20,7 +20,13 @@ const LoginScreen = (props) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
 
-  const redirect = location.search ? location.search.split('=')[1] : '/';
+  // const redirect = location.search ? location.search.split('=')[1] : '/';
+  // or
+  const searchString = location.search; // the string part of URL, after character '?'
+  const searchParams = new URLSearchParams(searchString);
+  const redirect = searchParams.has('redirect')
+    ? searchParams.get('redirect')
+    : '/';
 
   useEffect(() => {
     if (userInfo) {
@@ -54,12 +60,11 @@ const LoginScreen = (props) => {
   };
 
   const handleLoginSocial = async (_data) => {
-    console.log('data jwt', _data);
+    console.log('handleLoginSocial', _data);
     try {
       const token = await jwt.sign(
         _data,
-        // process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET, => Need Fix later
-        'mern_eCommerce',
+        process.env.REACT_APP_JWT_SECRET || process.env.JWT_SECRET,
         {
           expiresIn: '30d',
         }
