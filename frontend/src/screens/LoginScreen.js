@@ -38,7 +38,7 @@ const LoginScreen = (props) => {
   }, [history, userInfo, redirect]);
 
   const responseFacebook = (dataResponse) => {
-    //console.log(dataResponse);
+    console.log('dataResponse-GG', dataResponse);
     const data = {
       email: dataResponse.email,
       username: dataResponse.name,
@@ -49,18 +49,18 @@ const LoginScreen = (props) => {
   };
 
   const responseGoogle = (dataResponse) => {
-    console.log(dataResponse);
     const data = {
       email: dataResponse.profileObj.email,
       username: dataResponse.profileObj.name,
       googleId: dataResponse.profileObj.googleId,
     };
     if (!data.email) return;
+
+    console.log('dataResponse-GG', dataResponse);
     handleLoginSocial(data);
   };
 
   const handleLoginSocial = async (_data) => {
-    console.log('handleLoginSocial', _data);
     try {
       const token = await jwt.sign(
         _data,
@@ -69,7 +69,7 @@ const LoginScreen = (props) => {
           expiresIn: '30d',
         }
       );
-      console.log('token', token);
+      console.log('social-login-token', token);
 
       dispatch(login({ token }));
     } catch (error) {
