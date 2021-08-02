@@ -163,8 +163,10 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     if (id === 'profile') {
       // call route /api/users/profile -> get user details of user login (ProfileScreen)
       const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_HOST}/api/users/profile', config`
+        `${process.env.REACT_APP_BACKEND_HOST}/api/users/profile`,
+        config
       );
+
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } else {
       // call route /api/users/:id -> admin get user details of any user (UserEditScreen)

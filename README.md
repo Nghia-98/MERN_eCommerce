@@ -101,11 +101,11 @@ npm run dev
 ## Build & Deploy
 
 ```
-# 1. Create frontend prod build.
-cd frontend
-npm run build
+# 1. Deploy Backend on Heroku server
+- Go to Heroku -> Follow the instructions.
 
-# 2. Create Firebase application -> Choose Hosting service and follow the instructions.
+# 2.Deploy Frontend react app on Firebase
+- Create Firebase application -> Choose Hosting service and follow the instructions.
 ```
 
 ### Seed Database

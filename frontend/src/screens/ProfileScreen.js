@@ -118,8 +118,12 @@ const ProfileScreen = ({ history, location }) => {
         )}
         {success && <Message variant='success'>Profile Updated</Message>}
         {(loadingUserDetails || loadingUpdateProfile) && <Loader />}
-        {user.facebookId && <Message>Login with Facebook account !</Message>}
-        {user.googleId && <Message>Login with Google account !</Message>}
+        {user && user.facebookId && (
+          <Message>Login with Facebook account !</Message>
+        )}
+        {user && user.googleId && (
+          <Message>Login with Google account !</Message>
+        )}
         <Form onSubmit={submitHandler}>
           <Form.Group>
             <Form.Label>Email Address</Form.Label>
@@ -143,7 +147,7 @@ const ProfileScreen = ({ history, location }) => {
             ></Form.Control>
           </Form.Group>
 
-          {!user.facebookId && !user.googleId && (
+          {user && !user.facebookId && !user.googleId && (
             <>
               <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>
