@@ -3,24 +3,27 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from 'react-bootstrap';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
-import HomeScreen from './screens/HomeScreen';
-import ProductScreen from './screens/ProductScreen';
-import CartScreen from './screens/CartScreen';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import ShippingScreen from './screens/ShippingScreen';
-import PaymentScreen from './screens/PaymentScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
-import OrderScreen from './screens/OrderScreen/';
-import UserListScreen from './screens/UserListScreen/';
-import UserEditScreen from './screens/UserEditScreen';
-import ProductListScreen from './screens/ProductListScreen';
-import ProductEditScreen from './screens/ProductEditScreen';
-import OrderListScreen from './screens/OrderListScreen';
-import NotFoundScreen from './screens/NotFoundScreen';
+const HomeScreen = React.lazy(() => import('./screens/HomeScreen'));
+const ProductScreen = React.lazy(() => import('./screens/ProductScreen'));
+const CartScreen = React.lazy(() => import('./screens/CartScreen'));
+const LoginScreen = React.lazy(() => import('./screens/LoginScreen'));
+const RegisterScreen = React.lazy(() => import('./screens/RegisterScreen'));
+const ProfileScreen = React.lazy(() => import('./screens/ProfileScreen'));
+const ShippingScreen = React.lazy(() => import('./screens/ShippingScreen'));
+const PaymentScreen = React.lazy(() => import('./screens/PaymentScreen'));
+const PlaceOrderScreen = React.lazy(() => import('./screens/PlaceOrderScreen'));
+const OrderScreen = React.lazy(() => import('./screens/OrderScreen/'));
+const UserListScreen = React.lazy(() => import('./screens/UserListScreen/'));
+const UserEditScreen = React.lazy(() => import('./screens/UserEditScreen'));
+// prettier-ignore
+const ProductListScreen = React.lazy(() => import('./screens/ProductListScreen'));
+// prettier-ignore
+const ProductEditScreen = React.lazy(() => import('./screens/ProductEditScreen'));
+const OrderListScreen = React.lazy(() => import('./screens/OrderListScreen'));
+const NotFoundScreen = React.lazy(() => import('./screens/NotFoundScreen'));
 
 const App = () => {
   return (
