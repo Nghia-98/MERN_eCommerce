@@ -38,29 +38,31 @@ const LoginScreen = (props) => {
   }, [history, userInfo, redirect]);
 
   const responseFacebook = (dataResponse) => {
-    //console.log(dataResponse);
     const data = {
       email: dataResponse.email,
       username: dataResponse.name,
       facebookId: dataResponse.userID,
     };
     if (!data.email) return;
+
+    console.log('Facebook-callback-data', dataResponse);
     handleLoginSocial(data);
   };
 
   const responseGoogle = (dataResponse) => {
-    console.log(dataResponse);
     const data = {
       email: dataResponse.profileObj.email,
       username: dataResponse.profileObj.name,
       googleId: dataResponse.profileObj.googleId,
     };
     if (!data.email) return;
+
+    console.log('Google-callback-data', dataResponse);
     handleLoginSocial(data);
   };
 
   const handleLoginSocial = async (_data) => {
-    console.log('handleLoginSocial', _data);
+    console.log('Body token login', _data);
     try {
       const token = await jwt.sign(
         _data,
@@ -69,10 +71,11 @@ const LoginScreen = (props) => {
           expiresIn: '30d',
         }
       );
-      console.log('token', token);
+      console.log('Social Login token', token);
 
       dispatch(login({ token }));
     } catch (error) {
+      // dispatch action USER_LOGIN_FAIL with error
       console.log(error);
     }
   };
