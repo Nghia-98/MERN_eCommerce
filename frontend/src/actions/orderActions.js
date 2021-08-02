@@ -36,7 +36,11 @@ export const createOrder = (orderData) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/orders`, orderData, config);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/orders`,
+      orderData,
+      config
+    );
 
     dispatch({
       type: ORDER_CREATE_SUCCESS,
@@ -73,7 +77,10 @@ export const getOrderDetails = (orderId) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/orders/${orderId}`, config);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/orders/${orderId}`,
+      config
+    );
 
     dispatch({
       type: ORDER_DETAILS_SUCCESS,
@@ -109,7 +116,7 @@ export const payOrder =
       };
 
       const { data } = await axios.put(
-        `/api/orders/${orderId}/pay`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/orders/${orderId}/pay`,
         paymentResult,
         config
       );
@@ -145,7 +152,10 @@ export const getOrderListMy = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/orders/myorders`, config);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/orders/myorders`,
+      config
+    );
 
     dispatch({
       type: ORDER_LIST_MY_SUCCESS,
@@ -178,7 +188,10 @@ export const getOrderList = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/orders`, config);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/orders`,
+      config
+    );
 
     dispatch({
       type: ORDER_LIST_SUCCESS,
@@ -213,7 +226,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
     };
 
     const { data } = await axios.put(
-      `/api/orders/${order._id}/deliver`,
+      `${process.env.REACT_APP_BACKEND_HOST}/api/orders/${order._id}/deliver`,
       {},
       config
     );

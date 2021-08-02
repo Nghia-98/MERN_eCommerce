@@ -13,7 +13,9 @@ import {
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   // Instead of fetch data from server (take time),
   // we can getState from reduxStore (getState().productDetails.product)
-  const { data } = await axios.get(`/api/products/${id}`);
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_BACKEND_HOST}/api/products/${id}`
+  );
 
   // dispatch action (with payload info) to cartReducers => push itemAdd to state.cart.cartItems
   dispatch({

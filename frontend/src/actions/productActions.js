@@ -32,7 +32,7 @@ export const listProducts =
       dispatch({ type: PRODUCT_LIST_REQUEST });
 
       const { data } = await axios.get(
-        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
+        `${process.env.REACT_APP_BACKEND_HOST}/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
       );
 
       dispatch({
@@ -58,7 +58,9 @@ export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
-    const { data } = await axios.get(`/api/products/${id}`);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/products/${id}`
+    );
 
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
@@ -91,7 +93,10 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
 
     // call api delete product by id to backend server
     // eslint-disable-next-line
-    const { data } = await axios.delete(`/api/products/${productId}`, config);
+    const { data } = await axios.delete(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/products/${productId}`,
+      config
+    );
 
     dispatch({ type: PRODUCT_DELETE_SUCCESS });
     toast.success('Delete product successfully');
@@ -122,7 +127,11 @@ export const createProduct = () => async (dispatch, getState) => {
     };
 
     // call api create product to backend server
-    const { data } = await axios.post(`/api/products/`, {}, config);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/products/`,
+      {},
+      config
+    );
 
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data.product });
 
@@ -155,7 +164,7 @@ export const updateProduct = (productData) => async (dispatch, getState) => {
 
     // call api update product to backend server
     const { data } = await axios.put(
-      `/api/products/${productData._id}`,
+      `${process.env.REACT_APP_BACKEND_HOST}/api/products/${productData._id}`,
       productData,
       config
     );
@@ -191,7 +200,7 @@ export const createProductReview =
 
       // eslint-disable-next-line
       const { data } = await axios.post(
-        `/api/products/${productId}/reviews`,
+        `${process.env.REACT_APP_BACKEND_HOST}/api/products/${productId}/reviews`,
         review,
         config
       );
@@ -217,7 +226,9 @@ export const getTopRatingProducts = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_TOP_REQUEST });
 
-    const { data } = await axios.get(`/api/products/top`);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_HOST}/api/products/top`
+    );
 
     dispatch({
       type: PRODUCT_TOP_SUCCESS,
