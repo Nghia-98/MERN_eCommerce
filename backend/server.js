@@ -13,7 +13,6 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const __dirname = path.resolve();
-//require('dotenv').config();
 dotenv.config({ path: __dirname + '/.env' });
 
 connectDB();
@@ -43,6 +42,9 @@ app.get('/api/config/paypal', (req, res) => {
 
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
+//#region
+/*
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/frontend/build')));
 
@@ -54,6 +56,9 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API is running ...');
   });
 }
+
+*/
+//#endregion
 
 // middleware handler 404 error
 app.use(notFound);
