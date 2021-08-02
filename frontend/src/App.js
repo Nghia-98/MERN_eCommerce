@@ -29,10 +29,10 @@ const NotFoundScreen = React.lazy(() => import('./screens/NotFoundScreen'));
 const App = () => {
   return (
     <Router>
-      <React.Suspense fallback={<Loader />}>
-        <Header />
-        <main className='py-3'>
-          <Container>
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <React.Suspense fallback={<Loader />}>
             <ToastContainer position='top-right' autoClose={3000} />
             <Switch>
               <Route path='/login' component={LoginScreen} />
@@ -80,10 +80,10 @@ const App = () => {
               <Route path='/' component={HomeScreen} exact />
               <Route path='*' component={NotFoundScreen} />
             </Switch>
-          </Container>
-        </main>
-        <Footer />
-      </React.Suspense>
+          </React.Suspense>
+        </Container>
+      </main>
+      <Footer />
     </Router>
   );
 };
