@@ -38,8 +38,11 @@ const LoginScreen = (props) => {
   }, [history, userInfo, redirect]);
 
   const responseFacebook = (dataResponse) => {
+<<<<<<< HEAD
     console.log('Facebook-callback-data', dataResponse);
 
+=======
+>>>>>>> 663803a7495217c53e37b9c5e16ab5e64046ac20
     const data = {
       email: dataResponse.email,
       username: dataResponse.name,
