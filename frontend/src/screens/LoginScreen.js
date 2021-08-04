@@ -145,6 +145,7 @@ const LoginScreen = (props) => {
             cssClass='btn__social btn__facebook'
             textButton='Login With Facebook'
             fields='name,email,picture'
+            disableMobileRedirect={true}
             callback={responseFacebook}
           />
         </Col>
