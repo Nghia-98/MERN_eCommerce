@@ -33,6 +33,8 @@ This is the MERN_eCommerce project for my studing course: [MERN eCommerce From S
 - Use React Lazy Import & React Suspense to fetch react app from host server faster (Non-Functional)
 - Login with social account (Facebook, Google)
 
+- I'm implementing some other features.
+
 ## Usage
 
 ### ES Modules in Node
