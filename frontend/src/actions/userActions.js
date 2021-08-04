@@ -54,7 +54,7 @@ export const login = (dataObj) => async (dispatch) => {
         `${process.env.REACT_APP_BACKEND_HOST}/api/users/loginSocial`,
         config
       );
-      console.log('--------', data);
+      console.log('userInfo login:', data);
 
       userInfoResponse = data;
     } else {
