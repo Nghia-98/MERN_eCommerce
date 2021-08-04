@@ -52,7 +52,7 @@ You can also install and setup Babel if you would like
 Create a .env file in folder ./frotend and add the following
 
 ```
-HTTPS = true
+HTTPS = true // to use Facebook login
 REACT_APP_JWT_SECRET = your_jwt_secret
 REACT_APP_BACKEND_HOST = your_backend_host_address
 ```
@@ -62,7 +62,7 @@ REACT_APP_BACKEND_HOST = your_backend_host_address
 Create a .env file in then root and add the following
 
 ```
-HTTPS=true
+HTTPS = true
 NODE_ENV = development
 PORT = 5000
 MONGO_URI = your_mongodb_uri
