@@ -38,7 +38,7 @@ const LoginScreen = (props) => {
   }, [history, userInfo, redirect]);
 
   const responseFacebook = (dataResponse) => {
-    console.log('Facebook call back data:', dataResponse);
+    console.log('Facebook-callback-data', dataResponse);
 
     const data = {
       email: dataResponse.email,
@@ -46,34 +46,33 @@ const LoginScreen = (props) => {
       facebookId: dataResponse.userID,
     };
 
-    if (!data.email) {
+    if (data.email) {
+      console.log('handleLoginSocial has called!');
+      handleLoginSocial(data);
+    } else {
       dispatch({
         type: 'USER_LOGIN_FAIL',
         payload: 'Cannot access to your Facebook email !',
       });
-    } else {
-      console.log('handleLoginSocial has called!');
-      handleLoginSocial(data);
     }
   };
 
   const responseGoogle = (dataResponse) => {
-    console.log('Google call back data:', dataResponse);
-
+    console.log('Google-callback-data', dataResponse);
     const data = {
       email: dataResponse.profileObj.email,
       username: dataResponse.profileObj.name,
       googleId: dataResponse.profileObj.googleId,
     };
 
-    if (!data.email) {
+    if (data.email) {
+      console.log('handleLoginSocial has called!');
+      handleLoginSocial(data);
+    } else {
       dispatch({
         type: 'USER_LOGIN_FAIL',
         payload: 'Cannot access to your Google email !',
       });
-    } else {
-      console.log('handleLoginSocial has called!');
-      handleLoginSocial(data);
     }
   };
 
