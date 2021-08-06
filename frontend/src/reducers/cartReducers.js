@@ -7,7 +7,7 @@ import {
 } from '../constants/cartConstants';
 
 export const cartReducer = (
-  state = { cartItems: [], shippingAddress: {} },
+  state = { cartItems: [], shippingAddress: {}, paymentMethod: '' },
   action
 ) => {
   //----------------------------------cartItems: {...productInfo, product: objectID, quantity}[]
@@ -54,13 +54,14 @@ export const cartReducer = (
     case CART_SAVE_PAYMENT_METHOD:
       return {
         ...state,
-        paymentMethod: action.payload.data,
+        paymentMethod: action.payload,
       };
 
     case CART_INFO_RESET:
       return {
         cartItems: [],
         shippingAddress: {},
+        paymentMethod: '',
       };
 
     default:

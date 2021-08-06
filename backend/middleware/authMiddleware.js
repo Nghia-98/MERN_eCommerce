@@ -17,9 +17,9 @@ const isLogin = async (req, res, next) => {
       throw new Error('Not authorized, token failed !');
     }
 
-    console.log('-------------------------------', decoded);
+    console.log('authMiddler.js: decoded', decoded);
     req.user = await User.findById(decoded.id).select('-password');
-    console.log('authMiddler.js req.user', req.user);
+    console.log('authMiddler.js: req.user', req.user);
     next();
   }
 

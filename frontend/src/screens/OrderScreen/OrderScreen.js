@@ -19,7 +19,7 @@ import {
 } from '../../constants/orderConstants';
 
 const OrderScreen = (props) => {
-  const { history, match } = props;
+  const { location, history, match } = props;
   const orderId = match.params.id;
   const dispatch = useDispatch();
 
@@ -55,7 +55,7 @@ const OrderScreen = (props) => {
   }
   useEffect(() => {
     if (!userInfo) {
-      history.push('/login');
+      history.push(`/login?redirect=${location.pathname}`);
     }
 
     // declare func embed paypal sdk js on the page
@@ -78,7 +78,7 @@ const OrderScreen = (props) => {
     };
 
     // When orderDetails in redux state is emty, not loading and not have err
-    if (!order && !loading && !error) {
+    if (userInfo && !order && !loading && !error) {
       dispatch(getOrderDetails(orderId));
       return;
     }

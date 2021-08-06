@@ -12,7 +12,7 @@ import {
 import FormContainer from '../components/FormContainer';
 
 const UserEditScreen = (props) => {
-  const { history, match } = props;
+  const { location, history, match } = props;
 
   const userId = match.params.id;
 
@@ -36,10 +36,10 @@ const UserEditScreen = (props) => {
 
   useEffect(() => {
     if (!userInfo) {
-      history.push('/login');
+      history.push(`/login?redirect=${location.pathname}`);
     }
 
-    if (!userInfo.isAdmin) {
+    if (userInfo && !userInfo.isAdmin) {
       history.push('/');
     }
 
@@ -51,14 +51,22 @@ const UserEditScreen = (props) => {
 
     // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
     // the user we ưant edit has the id that match the id param in the url
-    if (!user.name || userId !== user._id) {
+    if (!user || !user.name || userId !== user._id) {
       dispatch(getUserDetails(userId));
     } else {
       // userDetails is alright
       setName(user.name);
       setIsAdmin(user.isAdmin);
     }
-  }, [dispatch, history, userInfo, user, userId, userUpdateSuccess]);
+  }, [
+    dispatch,
+    location.pathname,
+    history,
+    userInfo,
+    user,
+    userId,
+    userUpdateSuccess,
+  ]);
 
   const submitHandler = (e) => {
     e.preventDefault();

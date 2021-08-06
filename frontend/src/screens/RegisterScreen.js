@@ -10,6 +10,12 @@ import FormContainer from '../components/FormContainer';
 const RegisterScreen = (props) => {
   const { history, location } = props;
 
+  const searchString = location.search; // the string part of URL, after character '?'
+  const searchParams = new URLSearchParams(searchString);
+  const redirect = searchParams.has('redirect')
+    ? searchParams.get('redirect')
+    : '/';
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,8 +25,6 @@ const RegisterScreen = (props) => {
   const dispatch = useDispatch();
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfo } = userRegister;
-
-  const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
     if (userInfo) {

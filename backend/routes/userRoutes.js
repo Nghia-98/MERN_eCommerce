@@ -10,6 +10,7 @@ import {
   deleteUser,
   getUserById,
   updateUser,
+  authToken,
 } from '../controllers/userController.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -19,6 +20,10 @@ import auth from '../middleware/authMiddleware.js';
 router.route('/')
   .get(auth.isLogin, auth.isAdmin, getUsers)
   .post(userRegister);
+
+// prettier-ignore
+router.route('/authToken')
+  .get(auth.isLogin, authToken)
 
 // prettier-ignore
 router.route('/login')

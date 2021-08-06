@@ -1,16 +1,34 @@
-import { Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import Loader from '../components/Loader';
 import SearchBox from '../components/SearchBox';
 import { logout } from '../actions/userActions';
+import { authTokenLogin } from '../actions/authTokenActions';
 
-const Header = ({ history }) => {
+const Header = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
+  const authToken = useSelector((state) => state.authToken);
+  const { loading, token } = authToken;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  // Only run one time when componentDidMount (Header component render the first time)
+  useEffect(() => {
+    if (token) {
+      dispatch(authTokenLogin(token));
+    } else {
+      return;
+    }
+    // eslint-disable-next-line
+  }, []);
+
   const logoutHandler = () => {
+    history.push('/');
     dispatch(logout());
   };
 
@@ -30,6 +48,7 @@ const Header = ({ history }) => {
                   <i className='fas fa-shopping-cart'></i> Cart
                 </Nav.Link>
               </LinkContainer>
+              {loading && <Loader />}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id='username'>
                   <LinkContainer to='/profile'>

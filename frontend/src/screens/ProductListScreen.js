@@ -48,7 +48,7 @@ const ProductListScreen = (props) => {
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
-      history.push('/login');
+      history.push(`/login?redirect=${props.location.pathname}`);
     }
 
     if (productDeleteSuccess) {

@@ -27,9 +27,15 @@ const UserListScreen = (props) => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(getListUser());
     } else {
-      props.history.push('/login');
+      props.history.push(`/login?redirect=${props.location.pathname}`);
     }
-  }, [userInfo, userDeleteSuccess, dispatch, props.history]);
+  }, [
+    userInfo,
+    userDeleteSuccess,
+    dispatch,
+    props.history,
+    props.location.pathname,
+  ]);
 
   const userDeleteHandler = (userId) => {
     if (window.confirm('Are you sure to delete user?')) {
