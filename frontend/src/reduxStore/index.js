@@ -28,6 +28,7 @@ import {
   orderListReducer,
   orderPayReducer,
 } from '../reducers/orderReducers';
+import { authTokenReducer } from '../reducers/authTokenReducers';
 
 const rootReducer = combineReducers({
   productList: productListReducer,
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   productReviewCreate: productReviewCreateReducer,
   productTopRated: productTopRatedReducer,
   cart: cartReducer,
+  authToken: authTokenReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
@@ -57,20 +59,26 @@ const cartItemsLocalStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
   : [];
 
-const userInfoLocalStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
-  : null;
-
 const shippingAdressLocalStorage = localStorage.getItem('shippingAddress')
   ? JSON.parse(localStorage.getItem('shippingAddress'))
   : {};
+
+const tokenLocalStorage = localStorage.getItem('token') || '';
+console.log('tokenLocalStorage', tokenLocalStorage);
+
+// const userInfoLocalStorage = localStorage.getItem('userInfo')
+//   ? JSON.parse(localStorage.getItem('userInfo'))
+//   : null;
 
 const initialState = {
   cart: {
     cartItems: cartItemsLocalStorage,
     shippingAddress: shippingAdressLocalStorage,
   },
-  userLogin: { userInfo: userInfoLocalStorage },
+  authToken: {
+    token: tokenLocalStorage,
+  },
+  // userLogin: { userInfo: userInfoLocalStorage },
 };
 
 const middleware = [thunk];

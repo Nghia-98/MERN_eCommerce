@@ -20,9 +20,9 @@ const OrderListScreen = (props) => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(getOrderList());
     } else {
-      props.history.push('/login');
+      props.history.push(`/login?redirect=${props.location.pathname}`);
     }
-  }, [dispatch, props.history, userInfo]);
+  }, [dispatch, props.history, props.location.pathname, userInfo]);
 
   return (
     <>

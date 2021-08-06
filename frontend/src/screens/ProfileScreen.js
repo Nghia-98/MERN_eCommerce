@@ -65,7 +65,7 @@ const ProfileScreen = ({ history, location }) => {
   useEffect(() => {
     // if user is not logged in
     if (!userInfo) {
-      history.push('/login');
+      history.push(`/login?redirect=${location.pathname}`);
       return;
     }
 
@@ -90,7 +90,7 @@ const ProfileScreen = ({ history, location }) => {
     }
 
     // eslint-disable-next-line
-  }, [dispatch, history, userInfo, user, orders]);
+  }, [dispatch, history, location.pathname, userInfo, user, orders]);
 
   //console.log('Below useEffect has called !');
 

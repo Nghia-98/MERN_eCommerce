@@ -31,6 +31,7 @@ import {
 } from '../constants/orderConstants';
 import { toast } from 'react-toastify';
 import { CART_INFO_RESET } from '../constants/cartConstants';
+import { AUTH_TOKEN_SUCCESS } from '../constants/authTokenConstants';
 
 export const login = (dataObj) => async (dispatch) => {
   const { email, password, token } = dataObj;
@@ -75,9 +76,10 @@ export const login = (dataObj) => async (dispatch) => {
 
     // dispatch action for save userInfo in redux state (state.userLogin)
     dispatch({ type: USER_LOGIN_SUCCESS, payload: userInfoResponse });
+    //localStorage.setItem('userInfo', JSON.stringify(userInfoResponse));
 
-    // save userInfo to localStorage after login success
-    localStorage.setItem('userInfo', JSON.stringify(userInfoResponse));
+    dispatch({ type: AUTH_TOKEN_SUCCESS, payload: userInfoResponse.token });
+    localStorage.setItem('token', userInfoResponse.token);
   } catch (error) {
     // there are 2 kind of error
     // 1. error from client, network error ( -> use error.message)
@@ -130,9 +132,10 @@ export const register = (name, email, password) => async (dispatch) => {
     dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
 
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+    //localStorage.setItem('userInfo', JSON.stringify(data));
 
-    // save userInfo after login success
-    localStorage.setItem('userInfo', JSON.stringify(data));
+    dispatch({ type: AUTH_TOKEN_SUCCESS, payload: data.token });
+    localStorage.setItem('token', data.token);
   } catch (error) {
     // if err dispatch action to save err in redux state
     dispatch({
@@ -217,9 +220,10 @@ export const updateUserProfile =
       // After update user info success, we must update userInfo in others field of reduxState & localStorage
       // update reduxState.userLogin -> This help update user_name in Navbar
       dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-      // userLogin info must persistent storage in localstorage
-      //This will help reduxState.userLogin updated after page reload
-      localStorage.setItem('userInfo', JSON.stringify(data));
+      //localStorage.setItem('userInfo', JSON.stringify(data));
+
+      dispatch({ type: AUTH_TOKEN_SUCCESS, payload: data.token });
+      localStorage.setItem('token', data.token);
 
       // update reduxState.userDetails -> This help update info of form in ProfileScreen;
       const userDetails = { ...data };

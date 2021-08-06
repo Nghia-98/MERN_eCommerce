@@ -12,7 +12,7 @@ import {
   PRODUCT_UPDATE_RESET,
 } from '../constants/productConstants';
 
-const ProductEditScreen = ({ history, match }) => {
+const ProductEditScreen = ({ location, history, match }) => {
   const dispatch = useDispatch();
 
   const [productData, setProductData] = useState({
@@ -41,7 +41,7 @@ const ProductEditScreen = ({ history, match }) => {
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
-      history.push('/login');
+      history.push(`/login?redirect=${location.pathname}`);
     }
 
     if (productUpdateSuccess) {

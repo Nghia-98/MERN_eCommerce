@@ -2,6 +2,25 @@ import 'express-async-errors';
 import User from '../model/userModel.js';
 import { generateToken, verifyToken, decodeToken } from '../utils/jwt.js';
 
+// @desc:    Browser login by localStorage Token
+// @route:   Get /api/users/loginToken
+// @acess:   Public
+const authToken = async (req, res) => {
+  const token = generateToken(req.user._id);
+
+  const userInstance = {
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    isAdmin: req.user.isAdmin,
+    facebookId: req.user.facebookId,
+    googleId: req.user.googleId,
+    token,
+  };
+
+  res.status(200).json(userInstance);
+};
+
 // @desc:    User register
 // @route:   POST /api/users
 // @access:  Public
@@ -52,6 +71,8 @@ const userLogin = async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      facebookId: user.facebookId,
+      googleId: user.googleId,
       token: generateToken(user._id),
     };
     return res.status(200).json(userInfo);
@@ -100,6 +121,7 @@ const userLoginSocial = async (req, res) => {
               email: createdUser.email,
               isAdmin: createdUser.isAdmin,
               facebookId: createdUser.facebookId,
+              googleId: createdUser.googleId,
               token,
             });
           } else {
@@ -116,6 +138,7 @@ const userLoginSocial = async (req, res) => {
               email: userExists.email,
               isAdmin: userExists.isAdmin,
               facebookId: userExists.facebookId,
+              googleId: userExists.googleId,
               token,
             });
           }
@@ -154,6 +177,7 @@ const userLoginSocial = async (req, res) => {
               name: createdUser.name,
               email: createdUser.email,
               isAdmin: createdUser.isAdmin,
+              facebookId: createdUser.facebookId,
               googleId: createdUser.googleId,
               token,
             });
@@ -170,6 +194,7 @@ const userLoginSocial = async (req, res) => {
               name: userExists.name,
               email: userExists.email,
               isAdmin: userExists.isAdmin,
+              facebookId: userExists.googleId,
               googleId: userExists.googleId,
               token,
             });
@@ -207,8 +232,7 @@ const getUserProfile = async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    res.status(200);
-    res.json({
+    res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -315,6 +339,7 @@ const updateUser = async (req, res) => {
 };
 
 export {
+  authToken,
   userLogin,
   getUserProfile,
   updateUserProfile,
