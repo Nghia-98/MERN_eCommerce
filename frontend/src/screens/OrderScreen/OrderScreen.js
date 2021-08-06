@@ -78,7 +78,7 @@ const OrderScreen = (props) => {
     };
 
     // When orderDetails in redux state is emty, not loading and not have err
-    if (!order && !loading && !error) {
+    if (userInfo && !order && !loading && !error) {
       dispatch(getOrderDetails(orderId));
       return;
     }
