@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
@@ -8,7 +8,8 @@ import SearchBox from '../components/SearchBox';
 import { logout } from '../actions/userActions';
 import { authTokenLogin } from '../actions/authTokenActions';
 
-const Header = ({ history }) => {
+const Header = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.authToken);
   const { loading, token } = authToken;
@@ -27,6 +28,7 @@ const Header = ({ history }) => {
   }, []);
 
   const logoutHandler = () => {
+    history.push('/');
     dispatch(logout());
   };
 
