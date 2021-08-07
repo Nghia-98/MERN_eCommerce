@@ -10,6 +10,8 @@ import Meta from '../components/Meta';
 const OrderListScreen = (props) => {
   const dispatch = useDispatch();
 
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -17,12 +19,21 @@ const OrderListScreen = (props) => {
   const { loading, error, orders } = orderList;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(getOrderList());
-    } else {
+    // user logged out
+    if (!userInfo && !authToken) {
       props.history.push(`/login?redirect=${props.location.pathname}`);
     }
-  }, [dispatch, props.history, props.location.pathname, userInfo]);
+
+    // user logged in but not a admin
+    if (userInfo && !userInfo.isAdmin) {
+      props.history.push('/');
+    }
+
+    // user logged in with admin account
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(getOrderList());
+    }
+  }, [dispatch, props.history, props.location.pathname, authToken, userInfo]);
 
   return (
     <>

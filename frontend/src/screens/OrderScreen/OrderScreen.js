@@ -25,6 +25,8 @@ const OrderScreen = (props) => {
 
   const [sdkReady, setSdkReady] = useState(false);
 
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -54,7 +56,7 @@ const OrderScreen = (props) => {
     );
   }
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo && !authToken) {
       history.push(`/login?redirect=${location.pathname}`);
     }
 

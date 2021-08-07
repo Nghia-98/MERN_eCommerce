@@ -10,6 +10,8 @@ import Meta from '../../components/Meta';
 const UserListScreen = (props) => {
   const dispatch = useDispatch();
 
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -24,12 +26,22 @@ const UserListScreen = (props) => {
   } = userDelete;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(getListUser());
-    } else {
+    // user logged out
+    if (!userInfo && !authToken) {
       props.history.push(`/login?redirect=${props.location.pathname}`);
     }
+
+    // user logged in but not a admin
+    if (userInfo && !userInfo.isAdmin) {
+      props.history.push('/');
+    }
+
+    // user logged in with admin account
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(getListUser());
+    }
   }, [
+    authToken,
     userInfo,
     userDeleteSuccess,
     dispatch,

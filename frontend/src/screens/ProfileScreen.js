@@ -25,7 +25,8 @@ const ProfileScreen = ({ history, location }) => {
     user,
   } = userDetails;
 
-  // get data userLogin from redux state
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -63,34 +64,37 @@ const ProfileScreen = ({ history, location }) => {
   };
 
   useEffect(() => {
-    // if user is not logged in
-    if (!userInfo) {
+    // user logged out
+    if (!userInfo && !authToken) {
       history.push(`/login?redirect=${location.pathname}`);
       return;
     }
 
-    if (!user || !user.name) {
-      if (loadingUserDetails || errorUserDetails) {
+    if (userInfo) {
+      if (!user || !user.name) {
+        if (loadingUserDetails || errorUserDetails) {
+          return;
+        } else {
+          dispatch(getUserDetails('profile'));
+        }
+      } else {
+        if (user.name !== userInfo.name) {
+          dispatch(getUserDetails('profile'));
+        } else {
+          setName(user.name);
+          setEmail(user.email);
+        }
+      }
+
+      // orderListMy.orders in redux state is null/undefined
+      if (!orders && !loadingOrderListMy) {
+        dispatch(getOrderListMy());
         return;
-      } else {
-        dispatch(getUserDetails('profile'));
       }
-    } else {
-      if (user.name !== userInfo.name) {
-        dispatch(getUserDetails('profile'));
-      } else {
-        setName(user.name);
-        setEmail(user.email);
-      }
-    }
-    // orderListMy.orders in redux state is null/undefined
-    if (!orders && !loadingOrderListMy) {
-      dispatch(getOrderListMy());
-      return;
     }
 
     // eslint-disable-next-line
-  }, [dispatch, history, location.pathname, userInfo, user, orders]);
+  }, [dispatch, history, location.pathname, authToken, userInfo, user, orders]);
 
   //console.log('Below useEffect has called !');
 

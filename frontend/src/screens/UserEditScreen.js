@@ -18,6 +18,8 @@ const UserEditScreen = (props) => {
 
   const dispatch = useDispatch();
 
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -35,12 +37,25 @@ const UserEditScreen = (props) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (!userInfo) {
+    // user logged out
+    if (!userInfo && !authToken) {
       history.push(`/login?redirect=${location.pathname}`);
     }
 
-    if (userInfo && !userInfo.isAdmin) {
-      history.push('/');
+    if (userInfo) {
+      if (!userInfo.isAdmin) {
+        history.push('/');
+      }
+
+      // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
+      // the user we ưant edit has the id that match the id param in the url
+      if (!user || !user.name || userId !== user._id) {
+        dispatch(getUserDetails(userId));
+      } else {
+        // userDetails is alright
+        setName(user.name);
+        setIsAdmin(user.isAdmin);
+      }
     }
 
     if (userUpdateSuccess) {
@@ -48,20 +63,11 @@ const UserEditScreen = (props) => {
       dispatch({ type: USER_DETAILS_RESET });
       history.push('/admin/userlist');
     }
-
-    // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
-    // the user we ưant edit has the id that match the id param in the url
-    if (!user || !user.name || userId !== user._id) {
-      dispatch(getUserDetails(userId));
-    } else {
-      // userDetails is alright
-      setName(user.name);
-      setIsAdmin(user.isAdmin);
-    }
   }, [
     dispatch,
     location.pathname,
     history,
+    authToken,
     userInfo,
     user,
     userId,

@@ -27,6 +27,7 @@ const ProductEditScreen = ({ location, history, match }) => {
 
   const [uploading, setUploading] = useState(false);
 
+  const { token: authToken } = useSelector((state) => state.authToken);
   const { userInfo } = useSelector((state) => state.userLogin);
 
   const { loading, error, product } = useSelector(
@@ -40,8 +41,14 @@ const ProductEditScreen = ({ location, history, match }) => {
   } = useSelector((state) => state.productUpdate);
 
   useEffect(() => {
-    if (!userInfo || !userInfo.isAdmin) {
+    // user logged out
+    if (!userInfo && !authToken) {
       history.push(`/login?redirect=${location.pathname}`);
+    }
+
+    // user logged in but not a admin
+    if (userInfo && !userInfo.isAdmin) {
+      history.push('/');
     }
 
     if (productUpdateSuccess) {
@@ -65,7 +72,15 @@ const ProductEditScreen = ({ location, history, match }) => {
       });
     }
     // eslint-disable-next-line
-  }, [dispatch, history, match, userInfo, product, productUpdateSuccess]);
+  }, [
+    dispatch,
+    history,
+    match,
+    authToken,
+    userInfo,
+    product,
+    productUpdateSuccess,
+  ]);
 
   const productDataOnChangeHandler = (e) => {
     setProductData({

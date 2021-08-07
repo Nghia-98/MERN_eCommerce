@@ -24,6 +24,8 @@ const ProductListScreen = (props) => {
   const KeywordAdminParam = match.params.keyword || '';
   const pageNumberParam = match.params.pageNumber || 1;
 
+  const { token: authToken } = useSelector((state) => state.authToken);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -47,8 +49,14 @@ const ProductListScreen = (props) => {
   } = productCreated;
 
   useEffect(() => {
-    if (!userInfo || !userInfo.isAdmin) {
+    //user logged out
+    if (!userInfo && !authToken) {
       history.push(`/login?redirect=${props.location.pathname}`);
+    }
+
+    // user logged in but not a admin
+    if (userInfo && !userInfo.isAdmin) {
+      history.push('/');
     }
 
     if (productDeleteSuccess) {
