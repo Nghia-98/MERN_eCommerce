@@ -12,6 +12,7 @@ import {
   updateUser,
   authToken,
   sendVerifyEmail,
+  verifyEmailByToken,
 } from '../controllers/userController.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -48,18 +49,11 @@ router.route('/:id')
 /* --------------- verify Email --------------- */
 // prettier-ignore
 router.route('/account/verifyEmail/:token')
-  .get((req, res) => {
-    const token = req.params.token;
-
-    res.status(200).json({
-      message: 'Verified e-mail successfully!',
-      token: token,
-    });
-  });
+  .get(auth.isLogin, verifyEmailByToken);
 
 // prettier-ignore
 router.route('/account/verifyEmail')
-  .get(auth.isLogin, sendVerifyEmail)
+  .get(auth.isLogin, sendVerifyEmail);
 
 // // prettier-ignore
 // router.route('/verifyEmail')

@@ -346,16 +346,13 @@ const updateUser = async (req, res) => {
 // @access  Private
 const sendVerifyEmail = async (req, res) => {
   try {
+    // prettier-ignore
     if (req.user.isVerifiedEmail) {
-      res.status(400);
-      throw new Error('The email address has been verified!');
+      return res.status(400).json({ message: 'The email address has been verified!' });
     }
 
     if (!mailchecker.isValid(req.user.email)) {
-      res.status(400);
-      throw new Error(
-        'The email address is invalid or disposable and can not be verified!'
-      );
+      return res.status(400).json({ message: 'The email address is invalid!' });
     }
 
     const randomToken = await await createRandomBytesAsync(16);
@@ -367,8 +364,8 @@ const sendVerifyEmail = async (req, res) => {
       { new: true } // Return the document after update was applied
     );
 
-    const subject = 'Please verify your email address on Proshop';
     const mailTemplate = createVerifyMailTemplate(req.user.name, tokenString);
+    const subject = 'Please verify your email address on Proshop';
 
     await sendMail(req.user.email, subject, mailTemplate);
 
@@ -377,6 +374,44 @@ const sendVerifyEmail = async (req, res) => {
     });
   } catch (error) {
     throw new Error(error);
+  }
+};
+
+// @desc    Verify email address
+// @route   GET /api/users/account/verifyEmail/:token
+// @access  Private
+const verifyEmailByToken = async (req, res) => {
+  const { token } = req.params;
+
+  if (req.user.isVerifiedEmail) {
+    return res
+      .status(400)
+      .json({ message: 'The email address has been verified!' });
+  }
+
+  if (token === req.user.emailVerificationToken) {
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(500).json({
+        message: 'There was an error when loading info of your account!',
+      });
+    }
+
+    // update account info to verified
+    user.emailVerificationToken = '';
+    user.isVerifiedEmail = true;
+
+    const updatedUser = await user.save();
+
+    res
+      .status(200)
+      .json({ message: 'Thank you for verifying your email address!' });
+  } else {
+    return res.status(400).json({
+      message:
+        'The verification link was invalid, or is for a different account!',
+    });
   }
 };
 
@@ -392,4 +427,5 @@ export {
   updateUser,
   userLoginSocial,
   sendVerifyEmail,
+  verifyEmailByToken,
 };
