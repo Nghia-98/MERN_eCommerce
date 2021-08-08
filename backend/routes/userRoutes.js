@@ -11,6 +11,7 @@ import {
   getUserById,
   updateUser,
   authToken,
+  sendVerifyEmail,
 } from '../controllers/userController.js';
 import auth from '../middleware/authMiddleware.js';
 
@@ -43,5 +44,25 @@ router.route('/:id')
   .get(auth.isLogin, auth.isAdmin, getUserById)
   .put(auth.isLogin, auth.isAdmin, updateUser)
   .delete(auth.isLogin, auth.isAdmin, deleteUser);
+
+/* --------------- verify Email --------------- */
+// prettier-ignore
+router.route('/account/verifyEmail/:token')
+  .get((req, res) => {
+    const token = req.params.token;
+
+    res.status(200).json({
+      message: 'Verified e-mail successfully!',
+      token: token,
+    });
+  });
+
+// prettier-ignore
+router.route('/account/verifyEmail')
+  .get(auth.isLogin, sendVerifyEmail)
+
+// // prettier-ignore
+// router.route('/verifyEmail')
+//   .get(sendEmailVerify)
 
 export default router;

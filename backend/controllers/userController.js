@@ -1,6 +1,9 @@
 import 'express-async-errors';
+import mailchecker from 'mailchecker';
 import User from '../model/userModel.js';
 import { generateToken, verifyToken, decodeToken } from '../utils/jwt.js';
+import createRandomBytesAsync from '../utils/randomBytesAsync.js';
+import { createVerifyMailTemplate, sendMail } from '../utils/mailHelper.js';
 
 // @desc:    Browser login by localStorage Token
 // @route:   Get /api/users/loginToken
@@ -338,6 +341,45 @@ const updateUser = async (req, res) => {
   }
 };
 
+// @desc    Send verify email to user
+// @route   GET /api/users/account/verifyEmail
+// @access  Private
+const sendVerifyEmail = async (req, res) => {
+  try {
+    if (req.user.isVerifiedEmail) {
+      res.status(400);
+      throw new Error('The email address has been verified!');
+    }
+
+    if (!mailchecker.isValid(req.user.email)) {
+      res.status(400);
+      throw new Error(
+        'The email address is invalid or disposable and can not be verified!'
+      );
+    }
+
+    const randomToken = await await createRandomBytesAsync(16);
+    const tokenString = randomToken.toString('hex');
+
+    const userUpdated = await User.findOneAndUpdate(
+      { email: req.user.email }, // Filter object
+      { emailVerificationToken: tokenString }, // Updated object
+      { new: true } // Return the document after update was applied
+    );
+
+    const subject = 'Please verify your email address on Proshop';
+    const mailTemplate = createVerifyMailTemplate(req.user.name, tokenString);
+
+    await sendMail(req.user.email, subject, mailTemplate);
+
+    return res.status(200).json({
+      message: `An verify e-mail has been sent to ${req.user.email} with further instructions!`,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export {
   authToken,
   userLogin,
@@ -349,4 +391,5 @@ export {
   getUserById,
   updateUser,
   userLoginSocial,
+  sendVerifyEmail,
 };

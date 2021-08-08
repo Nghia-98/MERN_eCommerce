@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema(
       immutable: true, // not allow to change email field
     },
     emailVerificationToken: String,
-    emailVerified: { type: Boolean, required: true, default: false },
+    isVerifiedEmail: { type: Boolean, required: true, default: false },
 
     name: { type: String, required: true },
     password: String,
