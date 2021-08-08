@@ -9,19 +9,15 @@ const userSchema = mongoose.Schema(
       unique: true,
       immutable: true, // not allow to change email field
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-    },
-    facebookId: {
-      type: String,
-    },
-    googleId: {
-      type: String,
-    },
+    emailVerificationToken: String,
+    emailVerified: { type: Boolean, required: true, default: false },
+
+    name: { type: String, required: true },
+    password: String,
+
+    facebookId: String,
+    googleId: String,
+
     isAdmin: {
       type: Boolean,
       required: true,
