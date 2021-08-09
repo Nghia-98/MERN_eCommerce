@@ -32,6 +32,7 @@ This is the MERN_eCommerce project for my studing course: [MERN eCommerce From S
 - Split Frontend & Backend into Firebase static_web_app & Heroku Nodejs_app (Non-Functional)
 - Use React Lazy Import & React Suspense to fetch react app from host server faster (Non-Functional)
 - Login with social account (Facebook, Google)
+- Verify email with nodeMailer
 
 - I'm implementing some other features.
 
