@@ -23,6 +23,7 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
 } from '../constants/userContants';
 import axios from 'axios';
 import {
@@ -218,6 +219,7 @@ export const updateUserProfile =
 
       // Dispatch action for save user info in redux state (reduxState.userUpdateProfile)
       dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+      toast.success('Profile updated successfully!');
 
       // After update user info success, we must update userInfo in others field of reduxState & localStorage
       // update reduxState.userLogin -> This help update user_name in Navbar
@@ -231,6 +233,8 @@ export const updateUserProfile =
       const userDetails = { ...data };
       delete userDetails.token;
       dispatch({ type: USER_DETAILS_SUCCESS, payload: userDetails });
+
+      dispatch({ type: USER_UPDATE_PROFILE_RESET });
     } catch (error) {
       // if err dispatch action to save err in redux state
       dispatch({

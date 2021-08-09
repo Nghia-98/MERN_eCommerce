@@ -274,7 +274,7 @@ const updateUserProfile = async (req, res) => {
       isAdmin: updatedUser.isAdmin,
       facebookId: updatedUser.facebookId,
       googleId: updatedUser.googleId,
-      isVerifiedEmail: updateUser.isVerifiedEmail,
+      isVerifiedEmail: updatedUser.isVerifiedEmail,
       token,
     });
   } else {

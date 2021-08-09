@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { USER_UPDATE_PROFILE_RESET } from '../constants/userContants';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { getOrderListMy } from '../actions/orderActions';
 import { GET_VERIFY_EMAIL_RESET } from '../constants/verifyEmailConstants';
@@ -83,12 +82,6 @@ const ProfileScreen = ({ history, location }) => {
       return;
     }
 
-    if (successUpdate) {
-      toast.success('Profile updated successfully!');
-      dispatch({ type: USER_UPDATE_PROFILE_RESET });
-      return;
-    }
-
     if (successGetEmail) {
       toast.success(
         'The verification e-mail has been sent to your e-mail address!'
@@ -135,6 +128,7 @@ const ProfileScreen = ({ history, location }) => {
   //console.log('Below useEffect has called !');
 
   const submitHandler = (e) => {
+    console.log('submitHandler');
     e.preventDefault();
     if (password !== confirmPassword) {
       setMessage('Passwords do not match !!!');
@@ -146,6 +140,7 @@ const ProfileScreen = ({ history, location }) => {
   };
 
   const handleSendVerifyEmail = (e) => {
+    console.log('handleSendVerifyEmail');
     e.preventDefault();
     dispatch(getVerificationEmail());
   };
@@ -187,6 +182,7 @@ const ProfileScreen = ({ history, location }) => {
                   <>
                     <span style={{ fontSize: '12px' }}>Unverified: </span>
                     <button
+                      type='button'
                       className='text-left btn-sm btn-verify-email'
                       onClick={handleSendVerifyEmail}
                     >
