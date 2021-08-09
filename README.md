@@ -75,6 +75,8 @@ AWS_SECRET_ACCESS_KEY = your_aws_secret_key
 
 FACEBOOK_CLIENT_APP_ID = your_FB_ID
 GOOGLE_CLIENT_APP_ID = your_GG_ID
+
+FRONTEND_HOST_ADDRESS = https://localhost:3000
 ```
 
 ### Install Dependencies (frontend & backend)
