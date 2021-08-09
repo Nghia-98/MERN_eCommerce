@@ -1,6 +1,9 @@
 import 'express-async-errors';
+import mailchecker from 'mailchecker';
 import User from '../model/userModel.js';
 import { generateToken, verifyToken, decodeToken } from '../utils/jwt.js';
+import createRandomBytesAsync from '../utils/randomBytesAsync.js';
+import { createVerifyMailTemplate, sendMail } from '../utils/mailHelper.js';
 
 // @desc:    Browser login by localStorage Token
 // @route:   Get /api/users/loginToken
@@ -15,6 +18,7 @@ const authToken = async (req, res) => {
     isAdmin: req.user.isAdmin,
     facebookId: req.user.facebookId,
     googleId: req.user.googleId,
+    isVerifiedEmail: req.user.isVerifiedEmail,
     token,
   };
 
@@ -49,6 +53,8 @@ const userRegister = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        facebookId: user.facebookId,
+        googleId: user.googleId,
         token: generateToken(user._id),
       });
   } else {
@@ -239,6 +245,7 @@ const getUserProfile = async (req, res) => {
       isAdmin: user.isAdmin,
       facebookId: user.facebookId,
       googleId: user.googleId,
+      isVerifiedEmail: user.isVerifiedEmail,
     });
   } else {
     res.status(404);
@@ -267,6 +274,7 @@ const updateUserProfile = async (req, res) => {
       isAdmin: updatedUser.isAdmin,
       facebookId: updatedUser.facebookId,
       googleId: updatedUser.googleId,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
       token,
     });
   } else {
@@ -331,10 +339,96 @@ const updateUser = async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
     });
   } else {
     res.status(404);
     throw new Error('User not found !');
+  }
+};
+
+// @desc    Send verify email to user
+// @route   GET /api/users/account/verifyEmail
+// @access  Private
+const sendVerifyEmail = async (req, res) => {
+  try {
+    // prettier-ignore
+    if (req.user.isVerifiedEmail) {
+      return res.status(400).json({ message: 'The email address has been verified!' });
+    }
+
+    if (!mailchecker.isValid(req.user.email)) {
+      return res.status(400).json({ message: 'The email address is invalid!' });
+    }
+
+    const randomToken = await await createRandomBytesAsync(16);
+    const tokenString = randomToken.toString('hex');
+
+    const userUpdated = await User.findOneAndUpdate(
+      { email: req.user.email }, // Filter object
+      { emailVerificationToken: tokenString }, // Updated object
+      { new: true } // Return the document after update was applied
+    );
+
+    const mailTemplate = createVerifyMailTemplate(req.user.name, tokenString);
+    const subject = 'Please verify your email address on Proshop';
+
+    await sendMail(req.user.email, subject, mailTemplate);
+
+    return res.status(200).json({
+      message: `An verify e-mail has been sent to ${req.user.email} with further instructions!`,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+// @desc    Verify email address
+// @route   GET /api/users/account/verifyEmail/:token
+// @access  Private
+const verifyEmailByToken = async (req, res) => {
+  const { token } = req.params;
+
+  if (req.user.isVerifiedEmail) {
+    return res
+      .status(400)
+      .json({ message: 'The email address has been verified!' });
+  }
+
+  if (token === req.user.emailVerificationToken) {
+    const user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(500).json({
+        message: 'There was an error when loading info of your account!',
+      });
+    }
+
+    // update account info to verified
+    user.emailVerificationToken = '';
+    user.isVerifiedEmail = true;
+
+    const updatedUser = await user.save();
+
+    const verifiedUser = {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      facebookId: updateUser.facebookId,
+      googleId: updateUser.googleId,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
+    };
+
+    res.status(200).json({
+      message: 'Thank you for verifying your email address!',
+      verifiedUser,
+    });
+  } else {
+    return res.status(400).json({
+      message:
+        'The verification link was invalid, or is for a different account!',
+    });
   }
 };
 
@@ -349,4 +443,6 @@ export {
   getUserById,
   updateUser,
   userLoginSocial,
+  sendVerifyEmail,
+  verifyEmailByToken,
 };

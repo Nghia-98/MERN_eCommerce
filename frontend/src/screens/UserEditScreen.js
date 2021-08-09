@@ -24,7 +24,7 @@ const UserEditScreen = (props) => {
   const { userInfo } = userLogin;
 
   const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
+  const { loading, error, user: _userDetails } = userDetails;
 
   const userUpdate = useSelector((state) => state.userUpdate);
   const {
@@ -49,12 +49,12 @@ const UserEditScreen = (props) => {
 
       // userDetails.user === null/underfined || userDetails.user does not match the user we ưant edit
       // the user we ưant edit has the id that match the id param in the url
-      if (!user || !user.name || userId !== user._id) {
+      if (!_userDetails || !_userDetails.name || userId !== _userDetails._id) {
         dispatch(getUserDetails(userId));
       } else {
         // userDetails is alright
-        setName(user.name);
-        setIsAdmin(user.isAdmin);
+        setName(_userDetails.name);
+        setIsAdmin(_userDetails.isAdmin);
       }
     }
 
@@ -69,7 +69,7 @@ const UserEditScreen = (props) => {
     history,
     authToken,
     userInfo,
-    user,
+    _userDetails,
     userId,
     userUpdateSuccess,
   ]);
@@ -97,12 +97,12 @@ const UserEditScreen = (props) => {
           <Message variant='danger'>{error}</Message>
         ) : (
           <>
-            {user.facebookId && (
+            {_userDetails.facebookId && (
               <Form.Group>
                 <Message>Sign up with Facebook account !</Message>
               </Form.Group>
             )}
-            {user.googleId && (
+            {_userDetails.googleId && (
               <Form.Group>
                 <Message>Sign up with Google account !</Message>
               </Form.Group>
@@ -112,7 +112,7 @@ const UserEditScreen = (props) => {
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
                   type='email'
-                  value={user.email}
+                  value={_userDetails.email}
                   disabled
                   className='cursor-disabled'
                 ></Form.Control>

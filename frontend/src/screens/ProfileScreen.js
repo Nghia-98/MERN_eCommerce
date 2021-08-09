@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userContants';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { getOrderListMy } from '../actions/orderActions';
+import { GET_VERIFY_EMAIL_RESET } from '../constants/verifyEmailConstants';
+import { getVerificationEmail } from '../actions/verifyEmailActions';
 
 const ProfileScreen = ({ history, location }) => {
   const dispatch = useDispatch();
@@ -22,8 +26,17 @@ const ProfileScreen = ({ history, location }) => {
   const {
     loading: loadingUserDetails,
     error: errorUserDetails,
-    user,
+    user: _userDetails,
   } = userDetails;
+  const { isVerifiedEmail } = _userDetails;
+
+  // prettier-ignore
+  const getEmailVerification = useSelector((state) => state.getEmailVerification);
+  const {
+    loading: loadingGetEmail,
+    success: successGetEmail,
+    error: errorGetEmail,
+  } = getEmailVerification;
 
   const { token: authToken } = useSelector((state) => state.authToken);
 
@@ -35,7 +48,7 @@ const ProfileScreen = ({ history, location }) => {
   const {
     loading: loadingUpdateProfile,
     error: errorUpdateProfile,
-    success,
+    success: successUpdate,
   } = userUpdateProfile;
 
   const orderListMy = useSelector((state) => state.orderListMy);
@@ -70,19 +83,32 @@ const ProfileScreen = ({ history, location }) => {
       return;
     }
 
+    if (successUpdate) {
+      toast.success('Profile updated successfully!');
+      dispatch({ type: USER_UPDATE_PROFILE_RESET });
+      return;
+    }
+
+    if (successGetEmail) {
+      toast.success(
+        'The verification e-mail has been sent to your e-mail address!'
+      );
+      dispatch({ type: GET_VERIFY_EMAIL_RESET });
+    }
+
     if (userInfo) {
-      if (!user || !user.name) {
+      if (!_userDetails || !_userDetails.name) {
         if (loadingUserDetails || errorUserDetails) {
           return;
         } else {
           dispatch(getUserDetails('profile'));
         }
       } else {
-        if (user.name !== userInfo.name) {
+        if (_userDetails.name !== userInfo.name) {
           dispatch(getUserDetails('profile'));
         } else {
-          setName(user.name);
-          setEmail(user.email);
+          setName(_userDetails.name);
+          setEmail(_userDetails.email);
         }
       }
 
@@ -94,7 +120,17 @@ const ProfileScreen = ({ history, location }) => {
     }
 
     // eslint-disable-next-line
-  }, [dispatch, history, location.pathname, authToken, userInfo, user, orders]);
+  }, [
+    dispatch,
+    history,
+    location.pathname,
+    authToken,
+    userInfo,
+    _userDetails,
+    orders,
+    successUpdate,
+    successGetEmail,
+  ]);
 
   //console.log('Below useEffect has called !');
 
@@ -109,23 +145,30 @@ const ProfileScreen = ({ history, location }) => {
     }
   };
 
+  const handleSendVerifyEmail = (e) => {
+    e.preventDefault();
+    dispatch(getVerificationEmail());
+  };
+
   return (
     <Row>
       <Col md={3}>
         <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
-        {errorUserDetails && (
-          <Message variant='danger'>{errorUserDetails}</Message>
+        {(errorUserDetails || errorUpdateProfile || errorGetEmail) && (
+          <Message variant='danger'>
+            {errorUserDetails || errorUpdateProfile || errorGetEmail}
+          </Message>
         )}
-        {errorUpdateProfile && (
-          <Message variant='danger'>{errorUpdateProfile}</Message>
+
+        {(loadingUserDetails || loadingUpdateProfile || loadingGetEmail) && (
+          <Loader />
         )}
-        {success && <Message variant='success'>Profile Updated</Message>}
-        {(loadingUserDetails || loadingUpdateProfile) && <Loader />}
-        {user && user.facebookId && (
+
+        {_userDetails && _userDetails.facebookId && (
           <Message>Login with Facebook account !</Message>
         )}
-        {user && user.googleId && (
+        {_userDetails && _userDetails.googleId && (
           <Message>Login with Google account !</Message>
         )}
         <Form onSubmit={submitHandler}>
@@ -138,6 +181,25 @@ const ProfileScreen = ({ history, location }) => {
               disabled
               className='cursor-disabled'
             ></Form.Control>
+            {_userDetails ? (
+              <Message variant={!isVerifiedEmail ? 'warning' : 'success'}>
+                {!isVerifiedEmail ? (
+                  <>
+                    <span style={{ fontSize: '12px' }}>Unverified: </span>
+                    <button
+                      className='text-left btn-sm btn-verify-email'
+                      onClick={handleSendVerifyEmail}
+                    >
+                      Send verification email
+                    </button>
+                  </>
+                ) : (
+                  <span>Verified</span>
+                )}
+              </Message>
+            ) : (
+              ''
+            )}
           </Form.Group>
 
           <Form.Group controlId='name'>
@@ -151,7 +213,7 @@ const ProfileScreen = ({ history, location }) => {
             ></Form.Control>
           </Form.Group>
 
-          {user && !user.facebookId && !user.googleId && (
+          {_userDetails && !_userDetails.facebookId && !_userDetails.googleId && (
             <>
               <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>
