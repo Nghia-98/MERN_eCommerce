@@ -6,7 +6,7 @@ export const createVerifyMailTemplate = (userName, token) => {
   Thank you for registering with Proshop.
 
   <p> Please click this
-  <a href="${process.env.FRONTEND_HOST_ADDRESS_DEV}/login/?verifyEmailToken=${token}"> link </a>
+  <a href="${process.env.FRONTEND_HOST_ADDRESS}/login/?verifyEmailToken=${token}"> link </a>
   and login to active your account. </p>
  
   Thank you! <br\>
