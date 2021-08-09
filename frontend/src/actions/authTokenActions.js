@@ -27,7 +27,6 @@ export const authTokenLogin = (token) => async (dispatch) => {
     localStorage.setItem('token', data.token);
 
     dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     const errorMessage =
       error.response && error.response.data.message
