@@ -3,39 +3,77 @@ import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { login } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
+import { verifyEmail } from '../actions/verifyEmailActions';
 
 const LoginScreen = (props) => {
   const { history, location } = props;
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
+
+  const emailVerification = useSelector((state) => state.emailVerification);
+  const {
+    loading: loadingVerify,
+    success: successVerify,
+    error: errorVerify,
+    message: messageVerify,
+    verifiedUser,
+  } = emailVerification;
 
   // const redirect = location.search ? location.search.split('=')[1] : '/';
   // or
   const searchString = location.search; // the string part of URL, after character '?'
   const searchParams = new URLSearchParams(searchString);
+
   const redirect = searchParams.has('redirect')
     ? searchParams.get('redirect')
     : '/';
 
+  const verifyEmailToken = searchParams.has('verifyEmailToken')
+    ? searchParams.get('verifyEmailToken')
+    : '';
+
   useEffect(() => {
+    // initial value of successVerify is false
+    if (successVerify) {
+      toast.success(`${messageVerify}`);
+      history.push('/profile');
+      return;
+    }
+
+    //login successfully
     if (userInfo) {
-      history.push(redirect);
+      if (verifyEmailToken) {
+        dispatch(verifyEmail(verifyEmailToken));
+      } else {
+        history.push(redirect);
+        return;
+      }
     }
     return () => {
       //
     };
-  }, [history, userInfo, redirect]);
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    redirect,
+    verifyEmailToken,
+    successVerify,
+    messageVerify,
+    verifiedUser,
+  ]);
 
   const responseFacebook = (dataResponse) => {
     console.log('Facebook-callback-data', dataResponse);
@@ -103,9 +141,15 @@ const LoginScreen = (props) => {
 
   return (
     <FormContainer>
-      <h1>Sign In</h1>
-      {error && <Message variant='danger'>{error}</Message>}
-      {loading && <Loader />}
+      {verifyEmailToken ? (
+        <h1>Sing In To Active Your Account</h1>
+      ) : (
+        <h1>Sign In</h1>
+      )}
+      {(error || errorVerify) && (
+        <Message variant='danger'>{error || errorVerify}</Message>
+      )}
+      {(loading || loadingVerify) && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>

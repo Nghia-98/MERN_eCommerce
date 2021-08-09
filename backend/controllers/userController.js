@@ -18,6 +18,7 @@ const authToken = async (req, res) => {
     isAdmin: req.user.isAdmin,
     facebookId: req.user.facebookId,
     googleId: req.user.googleId,
+    isVerifiedEmail: req.user.isVerifiedEmail,
     token,
   };
 
@@ -52,6 +53,8 @@ const userRegister = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        facebookId: user.facebookId,
+        googleId: user.googleId,
         token: generateToken(user._id),
       });
   } else {
@@ -242,6 +245,7 @@ const getUserProfile = async (req, res) => {
       isAdmin: user.isAdmin,
       facebookId: user.facebookId,
       googleId: user.googleId,
+      isVerifiedEmail: user.isVerifiedEmail,
     });
   } else {
     res.status(404);
@@ -270,6 +274,7 @@ const updateUserProfile = async (req, res) => {
       isAdmin: updatedUser.isAdmin,
       facebookId: updatedUser.facebookId,
       googleId: updatedUser.googleId,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
       token,
     });
   } else {
@@ -334,6 +339,7 @@ const updateUser = async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
     });
   } else {
     res.status(404);
@@ -404,9 +410,20 @@ const verifyEmailByToken = async (req, res) => {
 
     const updatedUser = await user.save();
 
-    res
-      .status(200)
-      .json({ message: 'Thank you for verifying your email address!' });
+    const verifiedUser = {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      facebookId: updateUser.facebookId,
+      googleId: updateUser.googleId,
+      isVerifiedEmail: updateUser.isVerifiedEmail,
+    };
+
+    res.status(200).json({
+      message: 'Thank you for verifying your email address!',
+      verifiedUser,
+    });
   } else {
     return res.status(400).json({
       message:

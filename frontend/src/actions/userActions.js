@@ -32,6 +32,7 @@ import {
 import { toast } from 'react-toastify';
 import { CART_INFO_RESET } from '../constants/cartConstants';
 import { AUTH_TOKEN_SUCCESS } from '../constants/authTokenConstants';
+import { VERIFY_EMAIL_RESET } from '../constants/verifyEmailConstants';
 
 export const login = (dataObj) => async (dispatch) => {
   const { email, password, token } = dataObj;
@@ -105,6 +106,7 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_LIST_MY_RESET });
   dispatch({ type: ORDER_DETAILS_RESET });
+  dispatch({ type: VERIFY_EMAIL_RESET });
   dispatch({ type: USER_LOGOUT });
 };
 

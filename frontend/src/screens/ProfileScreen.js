@@ -22,8 +22,10 @@ const ProfileScreen = ({ history, location }) => {
   const {
     loading: loadingUserDetails,
     error: errorUserDetails,
-    user,
+    user: _userDetails,
   } = userDetails;
+
+  const { isVerifiedEmail } = _userDetails;
 
   const { token: authToken } = useSelector((state) => state.authToken);
 
@@ -71,18 +73,18 @@ const ProfileScreen = ({ history, location }) => {
     }
 
     if (userInfo) {
-      if (!user || !user.name) {
+      if (!_userDetails || !_userDetails.name) {
         if (loadingUserDetails || errorUserDetails) {
           return;
         } else {
           dispatch(getUserDetails('profile'));
         }
       } else {
-        if (user.name !== userInfo.name) {
+        if (_userDetails.name !== userInfo.name) {
           dispatch(getUserDetails('profile'));
         } else {
-          setName(user.name);
-          setEmail(user.email);
+          setName(_userDetails.name);
+          setEmail(_userDetails.email);
         }
       }
 
@@ -94,7 +96,15 @@ const ProfileScreen = ({ history, location }) => {
     }
 
     // eslint-disable-next-line
-  }, [dispatch, history, location.pathname, authToken, userInfo, user, orders]);
+  }, [
+    dispatch,
+    history,
+    location.pathname,
+    authToken,
+    userInfo,
+    _userDetails,
+    orders,
+  ]);
 
   //console.log('Below useEffect has called !');
 
@@ -107,6 +117,10 @@ const ProfileScreen = ({ history, location }) => {
       setPassword('');
       setConfirmPassword('');
     }
+  };
+
+  const handleSendVerifyEmail = () => {
+    console.log('Send email');
   };
 
   return (
@@ -122,10 +136,10 @@ const ProfileScreen = ({ history, location }) => {
         )}
         {success && <Message variant='success'>Profile Updated</Message>}
         {(loadingUserDetails || loadingUpdateProfile) && <Loader />}
-        {user && user.facebookId && (
+        {_userDetails && _userDetails.facebookId && (
           <Message>Login with Facebook account !</Message>
         )}
-        {user && user.googleId && (
+        {_userDetails && _userDetails.googleId && (
           <Message>Login with Google account !</Message>
         )}
         <Form onSubmit={submitHandler}>
@@ -138,6 +152,25 @@ const ProfileScreen = ({ history, location }) => {
               disabled
               className='cursor-disabled'
             ></Form.Control>
+            {_userDetails ? (
+              <Message variant={!isVerifiedEmail ? 'warning' : 'success'}>
+                {!isVerifiedEmail ? (
+                  <span>
+                    Unverified:{' '}
+                    <button
+                      className='btn-outline btn-sm'
+                      onClick={handleSendVerifyEmail}
+                    >
+                      Send verification email
+                    </button>
+                  </span>
+                ) : (
+                  <span>Verified</span>
+                )}
+              </Message>
+            ) : (
+              ''
+            )}
           </Form.Group>
 
           <Form.Group controlId='name'>
@@ -151,7 +184,7 @@ const ProfileScreen = ({ history, location }) => {
             ></Form.Control>
           </Form.Group>
 
-          {user && !user.facebookId && !user.googleId && (
+          {_userDetails && !_userDetails.facebookId && !_userDetails.googleId && (
             <>
               <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>
