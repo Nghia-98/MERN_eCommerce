@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userContants';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { getOrderListMy } from '../actions/orderActions';
+import { GET_VERIFY_EMAIL_RESET } from '../constants/verifyEmailConstants';
+import { getVerificationEmail } from '../actions/verifyEmailActions';
 
 const ProfileScreen = ({ history, location }) => {
   const dispatch = useDispatch();
@@ -24,8 +28,15 @@ const ProfileScreen = ({ history, location }) => {
     error: errorUserDetails,
     user: _userDetails,
   } = userDetails;
-
   const { isVerifiedEmail } = _userDetails;
+
+  // prettier-ignore
+  const getEmailVerification = useSelector((state) => state.getEmailVerification);
+  const {
+    loading: loadingGetEmail,
+    success: successGetEmail,
+    error: errorGetEmail,
+  } = getEmailVerification;
 
   const { token: authToken } = useSelector((state) => state.authToken);
 
@@ -37,7 +48,7 @@ const ProfileScreen = ({ history, location }) => {
   const {
     loading: loadingUpdateProfile,
     error: errorUpdateProfile,
-    success,
+    success: successUpdate,
   } = userUpdateProfile;
 
   const orderListMy = useSelector((state) => state.orderListMy);
@@ -72,6 +83,19 @@ const ProfileScreen = ({ history, location }) => {
       return;
     }
 
+    if (successUpdate) {
+      toast.success('Profile updated successfully!');
+      dispatch({ type: USER_UPDATE_PROFILE_RESET });
+      return;
+    }
+
+    if (successGetEmail) {
+      toast.success(
+        'The verification e-mail has been sent to your e-mail address!'
+      );
+      dispatch({ type: GET_VERIFY_EMAIL_RESET });
+    }
+
     if (userInfo) {
       if (!_userDetails || !_userDetails.name) {
         if (loadingUserDetails || errorUserDetails) {
@@ -104,6 +128,8 @@ const ProfileScreen = ({ history, location }) => {
     userInfo,
     _userDetails,
     orders,
+    successUpdate,
+    successGetEmail,
   ]);
 
   //console.log('Below useEffect has called !');
@@ -119,8 +145,9 @@ const ProfileScreen = ({ history, location }) => {
     }
   };
 
-  const handleSendVerifyEmail = () => {
-    console.log('Send email');
+  const handleSendVerifyEmail = (e) => {
+    e.preventDefault();
+    dispatch(getVerificationEmail());
   };
 
   return (
@@ -128,14 +155,16 @@ const ProfileScreen = ({ history, location }) => {
       <Col md={3}>
         <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
-        {errorUserDetails && (
-          <Message variant='danger'>{errorUserDetails}</Message>
+        {(errorUserDetails || errorUpdateProfile || errorGetEmail) && (
+          <Message variant='danger'>
+            {errorUserDetails || errorUpdateProfile || errorGetEmail}
+          </Message>
         )}
-        {errorUpdateProfile && (
-          <Message variant='danger'>{errorUpdateProfile}</Message>
+
+        {(loadingUserDetails || loadingUpdateProfile || loadingGetEmail) && (
+          <Loader />
         )}
-        {success && <Message variant='success'>Profile Updated</Message>}
-        {(loadingUserDetails || loadingUpdateProfile) && <Loader />}
+
         {_userDetails && _userDetails.facebookId && (
           <Message>Login with Facebook account !</Message>
         )}
@@ -155,15 +184,15 @@ const ProfileScreen = ({ history, location }) => {
             {_userDetails ? (
               <Message variant={!isVerifiedEmail ? 'warning' : 'success'}>
                 {!isVerifiedEmail ? (
-                  <span>
-                    Unverified:{' '}
+                  <>
+                    <span style={{ fontSize: '12px' }}>Unverified: </span>
                     <button
-                      className='btn-outline btn-sm'
+                      className='text-left btn-sm btn-verify-email'
                       onClick={handleSendVerifyEmail}
                     >
                       Send verification email
                     </button>
-                  </span>
+                  </>
                 ) : (
                   <span>Verified</span>
                 )}

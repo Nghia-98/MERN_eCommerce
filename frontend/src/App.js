@@ -33,7 +33,7 @@ const App = () => {
       <main className='py-3'>
         <Container>
           <React.Suspense fallback={<Loader />}>
-            <ToastContainer position='top-right' autoClose={3000} />
+            <ToastContainer position='top-right' autoClose={8000} />
             <Switch>
               <Route path='/login' component={LoginScreen} />
               <Route path='/shipping' component={ShippingScreen} />

@@ -29,7 +29,10 @@ import {
   orderPayReducer,
 } from '../reducers/orderReducers';
 import { authTokenReducer } from '../reducers/authTokenReducers';
-import { emailVerificationReducers } from '../reducers/emailVerificationReducers';
+import {
+  emailVerificationReducers,
+  getEmailVerificationReducers,
+} from '../reducers/emailVerificationReducers';
 
 const rootReducer = combineReducers({
   productList: productListReducer,
@@ -41,6 +44,7 @@ const rootReducer = combineReducers({
   productTopRated: productTopRatedReducer,
   cart: cartReducer,
   authToken: authTokenReducer,
+  getEmailVerification: getEmailVerificationReducers,
   emailVerification: emailVerificationReducers,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
