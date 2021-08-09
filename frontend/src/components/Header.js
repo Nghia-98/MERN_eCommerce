@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, useHistory, useLocation } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
@@ -9,7 +9,6 @@ import { logout } from '../actions/userActions';
 import { authTokenLogin } from '../actions/authTokenActions';
 
 const Header = () => {
-  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -19,19 +18,19 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const searchString = location.search; // the string part of URL, after character '?'
-  const searchParams = new URLSearchParams(searchString);
-  const verifyEmailToken = searchParams.has('verifyEmailToken')
-    ? searchParams.get('verifyEmailToken')
-    : '';
+  // const searchString = location.search; // the string part of URL, after character '?'
+  // const searchParams = new URLSearchParams(searchString);
+  // const verifyEmailToken = searchParams.has('verifyEmailToken')
+  //   ? searchParams.get('verifyEmailToken')
+  //   : '';
 
   // Only run one time when componentDidMount (Header component render the first time)
   useEffect(() => {
-    if (verifyEmailToken) {
-      // prepare for login and verify email (implement in LoginScreen component)
-      dispatch(logout());
-      return;
-    }
+    // if (verifyEmailToken) {
+    //   // prepare for login and verify email (implement in LoginScreen component)
+    //   dispatch(logout());
+    //   return;
+    // }
 
     if (token) {
       dispatch(authTokenLogin(token));

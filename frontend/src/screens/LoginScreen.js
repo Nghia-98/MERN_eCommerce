@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import Loader from '../components/Loader';
@@ -22,14 +21,16 @@ const LoginScreen = (props) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
 
-  const emailVerification = useSelector((state) => state.emailVerification);
-  const {
-    loading: loadingVerify,
-    success: successVerify,
-    error: errorVerify,
-    message: messageVerify,
-    verifiedUser,
-  } = emailVerification;
+  //#region
+  // const emailVerification = useSelector((state) => state.emailVerification);
+  // const {
+  //   loading: loadingVerify,
+  //   success: successVerify,
+  //   error: errorVerify,
+  //   message: messageVerify,
+  //   verifiedUser,
+  // } = emailVerification;
+  //#endregion
 
   // const redirect = location.search ? location.search.split('=')[1] : '/';
   // or
@@ -45,17 +46,26 @@ const LoginScreen = (props) => {
     : '';
 
   useEffect(() => {
+    //#region
     // initial value of successVerify is false
-    if (successVerify) {
-      toast.success(`${messageVerify}`);
-      history.push('/profile');
-      return;
-    }
+    // if (successVerify) {
+    //   toast.success(`${messageVerify}`);
+    //   history.push('/profile');
+    //   return;
+    // }
 
+    // if (errorVerify) {
+    //   toast.error(`${errorVerify}`);
+    //   history.push('/profile');
+    //   return;
+    // }
+    //#endregion
     //login successfully
     if (userInfo) {
       if (verifyEmailToken) {
+        history.push('/profile');
         dispatch(verifyEmail(verifyEmailToken));
+        return;
       } else {
         history.push(redirect);
         return;
@@ -64,16 +74,7 @@ const LoginScreen = (props) => {
     return () => {
       //
     };
-  }, [
-    dispatch,
-    history,
-    userInfo,
-    redirect,
-    verifyEmailToken,
-    successVerify,
-    messageVerify,
-    verifiedUser,
-  ]);
+  }, [dispatch, history, userInfo, redirect, verifyEmailToken]);
 
   const responseFacebook = (dataResponse) => {
     console.log('Facebook-callback-data', dataResponse);
@@ -146,10 +147,8 @@ const LoginScreen = (props) => {
       ) : (
         <h1>Sign In</h1>
       )}
-      {(error || errorVerify) && (
-        <Message variant='danger'>{error || errorVerify}</Message>
-      )}
-      {(loading || loadingVerify) && <Loader />}
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>

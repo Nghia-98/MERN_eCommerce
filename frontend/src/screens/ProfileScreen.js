@@ -7,8 +7,12 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { getOrderListMy } from '../actions/orderActions';
-import { GET_VERIFY_EMAIL_RESET } from '../constants/verifyEmailConstants';
+import {
+  GET_VERIFY_EMAIL_RESET,
+  VERIFY_EMAIL_RESET,
+} from '../constants/verifyEmailConstants';
 import { getVerificationEmail } from '../actions/verifyEmailActions';
+import { USER_DETAILS_RESET } from '../constants/userContants';
 
 const ProfileScreen = ({ history, location }) => {
   const dispatch = useDispatch();
@@ -19,6 +23,15 @@ const ProfileScreen = ({ history, location }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
+
+  const emailVerification = useSelector((state) => state.emailVerification);
+  const {
+    loading: loadingVerify,
+    success: successVerify,
+    error: errorVerify,
+    message: messageVerify,
+    verifiedUser,
+  } = emailVerification;
 
   // get data userDetails from redux state
   const userDetails = useSelector((state) => state.userDetails);
@@ -89,6 +102,19 @@ const ProfileScreen = ({ history, location }) => {
       dispatch({ type: GET_VERIFY_EMAIL_RESET });
     }
 
+    // initial value of successVerify is false
+    if (successVerify) {
+      toast.success(`${messageVerify}`);
+      dispatch({ type: USER_DETAILS_RESET });
+      dispatch({ type: VERIFY_EMAIL_RESET });
+      return;
+    }
+
+    if (errorVerify) {
+      toast.error(`${errorVerify}`);
+      dispatch({ type: VERIFY_EMAIL_RESET });
+    }
+
     if (userInfo) {
       if (!_userDetails || !_userDetails.name) {
         if (loadingUserDetails || errorUserDetails) {
@@ -123,6 +149,11 @@ const ProfileScreen = ({ history, location }) => {
     orders,
     successUpdate,
     successGetEmail,
+    successVerify,
+    errorVerify,
+    verifiedUser,
+    isVerifiedEmail,
+    verifiedUser,
   ]);
 
   //console.log('Below useEffect has called !');
@@ -156,9 +187,10 @@ const ProfileScreen = ({ history, location }) => {
           </Message>
         )}
 
-        {(loadingUserDetails || loadingUpdateProfile || loadingGetEmail) && (
-          <Loader />
-        )}
+        {(loadingUserDetails ||
+          loadingUpdateProfile ||
+          loadingGetEmail ||
+          loadingVerify) && <Loader />}
 
         {_userDetails && _userDetails.facebookId && (
           <Message>Login with Facebook account !</Message>
