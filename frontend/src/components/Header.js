@@ -18,19 +18,23 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  //#region
   // const searchString = location.search; // the string part of URL, after character '?'
   // const searchParams = new URLSearchParams(searchString);
   // const verifyEmailToken = searchParams.has('verifyEmailToken')
   //   ? searchParams.get('verifyEmailToken')
   //   : '';
+  //#endregion
 
   // Only run one time when componentDidMount (Header component render the first time)
   useEffect(() => {
+    //#region
     // if (verifyEmailToken) {
     //   // prepare for login and verify email (implement in LoginScreen component)
     //   dispatch(logout());
     //   return;
     // }
+    //#endregion
 
     if (token) {
       dispatch(authTokenLogin(token));

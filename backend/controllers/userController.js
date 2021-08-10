@@ -432,7 +432,7 @@ const verifyEmailByToken = async (req, res) => {
   }
 };
 
-export {
+export default {
   authToken,
   userLogin,
   getUserProfile,

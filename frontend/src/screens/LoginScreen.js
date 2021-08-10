@@ -47,19 +47,20 @@ const LoginScreen = (props) => {
 
   useEffect(() => {
     //#region
-    // initial value of successVerify is false
-    // if (successVerify) {
-    //   toast.success(`${messageVerify}`);
-    //   history.push('/profile');
-    //   return;
-    // }
+    /* initial value of successVerify is false
+    if (successVerify) {
+      toast.success(`${messageVerify}`);
+      history.push('/profile');
+      return;
+    }
 
-    // if (errorVerify) {
-    //   toast.error(`${errorVerify}`);
-    //   history.push('/profile');
-    //   return;
-    // }
+    if (errorVerify) {
+      toast.error(`${errorVerify}`);
+      history.push('/profile');
+      return;
+    } */
     //#endregion
+
     //login successfully
     if (userInfo) {
       if (verifyEmailToken) {

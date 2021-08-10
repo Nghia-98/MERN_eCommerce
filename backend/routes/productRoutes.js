@@ -1,37 +1,30 @@
 import express from 'express';
 const router = express.Router();
-import {
-  getProducts,
-  getProductById,
-  deleteProductById,
-  createProduct,
-  updateProduct,
-  createProductReview,
-  getTopProducts,
-  getAllProducts,
-} from '../controllers/productControllers.js';
 import auth from '../middleware/authMiddleware.js';
+import * as productController from '../controllers/productControllers.js';
 
 // @desc: Fetch all products
 // @route: GET /api/product
 // @access: Public
 router
   .route('/')
-  .get(getProducts)
-  .post(auth.isLogin, auth.isAdmin, createProduct);
+  .get(productController.getProducts)
+  .post(auth.isLogin, auth.isAdmin, productController.createProduct);
 
-router.get('/all', getAllProducts);
+router.get('/all', productController.getAllProducts);
 
-router.get('/top', getTopProducts);
+router.get('/top', productController.getTopProducts);
 
-router.route('/:id/reviews').post(auth.isLogin, createProductReview);
+router
+  .route('/:id/reviews')
+  .post(auth.isLogin, productController.createProductReview);
 
 // @desc: Fetch, Delete single product
 // @route: GET, DELETE /api/products/:id
 router
   .route('/:id')
-  .get(getProductById)
-  .delete(auth.isLogin, auth.isAdmin, deleteProductById)
-  .put(auth.isLogin, auth.isAdmin, updateProduct);
+  .get(productController.getProductById)
+  .delete(auth.isLogin, auth.isAdmin, productController.deleteProductById)
+  .put(auth.isLogin, auth.isAdmin, productController.updateProduct);
 
 export default router;

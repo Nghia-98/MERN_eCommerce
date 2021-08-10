@@ -122,7 +122,7 @@ const updateOrderToDelivered = async (req, res) => {
   }
 };
 
-export {
+export default {
   addOrderItems,
   getOrderById,
   updateOrderToPay,
