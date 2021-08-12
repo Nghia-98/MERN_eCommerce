@@ -93,7 +93,7 @@ const PlaceOrderScreen = (props) => {
                 <ListGroup variant='flush'>
                   {cart.cartItems.map((item, index) => (
                     <ListGroup.Item key={index}>
-                      <Row>
+                      <Row className='align-items-center'>
                         <Col md={2}>
                           <Image
                             src={item.image}

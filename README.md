@@ -1,8 +1,8 @@
-# MERN_eCommerce Platform
+# ProShop eCommerce Platform built with the MERN stack & Redux.
 
-> eCommerce platform built with the MERN stack & Redux.
+This is a project for my studying course, I have refactored a little bit & add more features by myself.
 
-This is the MERN_eCommerce project for my studing course: [MERN eCommerce From Scratch](https://www.udemy.com/course/mern-ecommerce)
+[MERN eCommerce From Scratch](https://www.udemy.com/course/mern-ecommerce).
 
 ![screenshot](https://github.com/bradtraversy/proshop_mern/blob/master/uploads/Screen%20Shot%202020-09-29%20at%205.50.52%20PM.png)
 
@@ -58,7 +58,7 @@ REACT_APP_JWT_SECRET = your_jwt_secret
 REACT_APP_BACKEND_HOST = your_backend_host_address
 ```
 
-## 1. Env file of Backend NodeJS App
+## 2. Env file of Backend NodeJS App
 
 Create a .env file in then root and add the following
 
