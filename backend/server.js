@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('API Proshop NodeJS Backend is running ...');
+  res.send('<h1>(API Proshop) - NodeJS server is running ...<h1>');
 });
 
 app.use('/api/products', productRoutes);
