@@ -22,6 +22,7 @@ const importData = async () => {
     const usersCreated = await User.insertMany(users);
     const adminUserId = usersCreated[0]._id;
 
+    // number of products per page (6 product)
     const sampleProducts = products.map((product) => {
       return {
         ...product,
@@ -29,7 +30,15 @@ const importData = async () => {
       };
     });
 
-    await Product.insertMany(sampleProducts);
+    // number of products total page (15 page)
+    let seedProducts = [];
+    for (let i = 0; i < 15; i++) {
+      seedProducts = [...seedProducts, ...sampleProducts];
+    }
+
+    console.log(`Num of products: ${seedProducts.length}`.bgGreen.inverse);
+
+    await Product.insertMany(seedProducts);
 
     console.log('Data Imported!'.green.inverse);
     process.exit();

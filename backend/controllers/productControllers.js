@@ -19,7 +19,7 @@ export const getAllProducts = async (req, res) => {
 // @route:  GET /api/products
 // @access: Public
 export const getProducts = async (req, res) => {
-  const pageSize = 1;
+  const pageSize = 6;
   const pageQueryNumber = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword
