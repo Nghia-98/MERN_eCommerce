@@ -25,6 +25,7 @@ This is a project for my studying course, I have refactored a little bit & add m
 ## Features outside the course (I research others resources and implement myself)
 
 - Handle resource not found in react app (404 - page not found)
+- Run project with Dockerfile & docker-compose (Non-Functional)
 - Upload images to AWS S3 service
 - Search products in admin screen
 - Toast notify to show status of CRUD action
@@ -55,7 +56,7 @@ Create a .env file in folder ./frotend and add the following
 ```
 HTTPS = true // to use Facebook login
 REACT_APP_JWT_SECRET = your_jwt_secret
-REACT_APP_BACKEND_HOST = your_backend_host_address
+REACT_APP_BACKEND_HOST = http://localhost:5000
 ```
 
 ## 2. Env file of Backend NodeJS App
@@ -63,7 +64,6 @@ REACT_APP_BACKEND_HOST = your_backend_host_address
 Create a .env file in then root and add the following
 
 ```
-HTTPS = true
 NODE_ENV = development
 PORT = 5000
 MONGO_URI = your_mongodb_uri
@@ -77,6 +77,33 @@ FACEBOOK_CLIENT_APP_ID = your_FB_ID
 GOOGLE_CLIENT_APP_ID = your_GG_ID
 
 FRONTEND_HOST_ADDRESS = https://localhost:3000
+
+EMAIL_USER_NAME = your_email_to_use_nodemailer
+EMAIL_PASSWORD = your_email_password
+```
+
+### Run With Docker
+
+## 1. Create image for backend - server (nodejs app)
+
+```
+docker build . -t image-backend
+```
+
+## 2. Create image for frontend - client (react app)
+
+```
+cd frontend
+docker build . -t image-frontend
+```
+
+## 3. Run both backend (http://localhost:5000) & frontend (https://localhost:3000)
+
+```
+cd .. (back to the root path of the project)
+docker-compose up -d
+
+# Go to http://localhost:5000 & https://localhost:3000 to see the website
 ```
 
 ### Install Dependencies (frontend & backend)
@@ -87,7 +114,7 @@ cd frontend
 npm install
 ```
 
-### Run
+### Run Without Docker
 
 ```
 # Run fontend only
@@ -98,7 +125,7 @@ npm run client
 # Run backend only
 npm run server
 
-# Run frontend (:3000) & backend (:5000)
+# Run frontend (https://localhost:3000) & backend (http://localhost:5000)
 npm run dev
 
 ```
