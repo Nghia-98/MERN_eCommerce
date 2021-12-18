@@ -85,17 +85,26 @@ EMAIL_PASSWORD = your_email_password
 ### Run With Docker
 
 ## 1. Create image for backend - server (nodejs app)
-
 ```
 docker build . -t image-backend
 ```
+# if use want run only the backend-server image:
+```
+docker run -d --env-file ./.env -p 2222:3000 --name container-backend image-backend  
+```
+# Open browses at https://localhost:2222 to see server
 
 ## 2. Create image for frontend - client (react app)
-
 ```
 cd frontend
 docker build . -t image-frontend
+````
+# if use want run only the client image:
 ```
+docker run -d --env-file ./.env -p 2121:3000 --name container-frontend image-frontend 
+```
+# Open browses at https://localhost:2121 to see client
+
 
 ## 3. Run both backend (http://localhost:5000) & frontend (https://localhost:3000)
 
