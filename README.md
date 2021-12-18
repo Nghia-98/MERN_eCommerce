@@ -92,7 +92,7 @@ docker build . -t image-backend
 ```
 docker run -d --env-file ./.env -p 2222:3000 --name container-backend image-backend  
 ```
-### Open browses at https://localhost:2222 to see server
+### Open browses at http://localhost:2222 to see server
 
 ## 2. Create image for frontend - client (react app)
 ```
